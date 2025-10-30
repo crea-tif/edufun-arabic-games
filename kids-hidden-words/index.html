@@ -7,31 +7,22 @@
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap');
-@font-face{
-  font-family:"NotoKufiArabicLocal";
-  src:url("../assets/NotoKufiArabic.ttf") format("truetype");
-  font-display:swap;
-}
 
 :root{
   --ink:#0f172a; --accent:#22c55e; --ok:#16a34a; --warn:#f59e0b;
   --glass: rgba(255,255,255,0.9);
   --cell: 48px;
-
-  --brand:#22c55e;        /* أخضر مبهج للأطفال */
-  --brand-deep:#16a34a;
-  --muted:#29425f;
 }
 
 html,body{height:100%}
 body{
   margin:0; color:var(--ink);
-  font-family:"Tajawal","NotoKufiArabicLocal","Noto Kufi Arabic","Cairo",system-ui,-apple-system,"Segoe UI",Tahoma,Arial;
+  font-family:"Tajawal",system-ui,-apple-system,"Segoe UI",Tahoma,Arial;
   background: radial-gradient(1000px 600px at 20% -10%, #d1fae5, transparent 60%), linear-gradient(35deg,#99f6e4 0%, #22c55e 100%) fixed;
 }
 body::after{
   content:""; position:fixed; inset:auto 0 16px 16px; width:160px; height:70px; z-index:-1;
-  background:url("edufun-logo-512.png") no-repeat left/contain; opacity:.12; pointer-events:none;
+  background:url("../edufun-logo-512.png") no-repeat left/contain; opacity:.12; pointer-events:none;
 }
 
 header, .card{
@@ -109,7 +100,7 @@ hr{border:none;border-top:1px solid #e7f0ff;margin:10px 0}
   <div class="wrap">
     <div class="brandbar" dir="rtl">
       <div class="brandbox">
-        <img class="brand" src="edufun-logo-512.png" alt="EDUFUN">
+        <img class="brand" src="../edufun-logo-512.png" alt="EDUFUN">
         <div class="brand-title">
           <div class="t1">الكلمات الخفية للأطفال</div>
           <div class="t2">مستويات ممتعة وسهلة</div>
@@ -195,7 +186,6 @@ const CATEGORIES={
 
 /* ===== محرّك اللعبة ===== */
 const gridEl=document.getElementById('grid'),
-levelSel=null,                       // غير مستخدم هنا
 sizeSel=document.getElementById('size'),
 chunkSel=document.getElementById('chunk'),
 targetsEl=document.getElementById('targets'),
@@ -207,19 +197,13 @@ difficultySel=document.getElementById('difficulty');
 
 let ALL_NAMES=CATEGORIES[categorySel.value].slice();
 let N=+sizeSel.value, CHUNK=+chunkSel.value;
-let LEVELS=[], cells=[], board=[], isWord=[], targetNames=[], remaining=new Set();
+let cells=[], board=[], isWord=[], targetNames=[], remaining=new Set();
 let hintsOn=false;
 
 const AR_RANDOM="ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
 const randLetter=()=>AR_RANDOM[Math.floor(Math.random()*AR_RANDOM.length)];
 const normalize=s=>s.replace(/\s+/g,'').replace(/ـ/g,'').replace(/[^\u0600-\u06FF]/g,'');
 const idx=(r,c)=>r*N+c, inBounds=(r,c)=>r>=0&&r<N&&c>=0&&c<N;
-
-function rebuildLevels(){
-  LEVELS=[];
-  for(let i=0;i<ALL_NAMES.length;i+=CHUNK) LEVELS.push(ALL_NAMES.slice(i,i+CHUNK));
-}
-rebuildLevels();
 
 function buildGrid(){
   gridEl.innerHTML=''; cells=[];
@@ -249,8 +233,6 @@ function tryPlace(word){
 function pickSubset(a,k){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x.slice(0,Math.min(k,x.length));}
 
 function generate(){
-  rebuildLevels();
-
   const eligible=ALL_NAMES.filter(n=>normalize(n).length<=N);
   let names=pickSubset(eligible, Math.min(CHUNK, eligible.length));
   names.sort((a,b)=>normalize(b).length-normalize(a).length);
@@ -277,54 +259,24 @@ function generate(){
 }
 
 function renderTargets(){
-  const listTitle=document.getElementById('listTitle');
-  listTitle.textContent=`الكلمات المستهدفة — (${targetNames.length} كلمة)`;
+  document.getElementById('listTitle').textContent=`الكلمات المستهدفة — (${targetNames.length} كلمة)`;
   targetsEl.innerHTML='';
   targetNames.forEach(n=>{ const b=document.createElement('span'); b.className='badge'; b.dataset.name=n; b.textContent=n; targetsEl.appendChild(b); });
 }
 function markBadgeFound(n){ [...targetsEl.children].forEach(x=>{ if(x.dataset.name===n) x.classList.add('found'); }); }
 function updateStatus(){ statusEl.textContent=`المتبقي: ${remaining.size} / ${targetNames.length}`; }
 
-/* سحب/إسقاط */
-let start=null, lastPreview=[];
-function posFromEl(el){ const i=+el.dataset.index; return {r:Math.floor(i/N), c:i%N}; }
-function clearPreview(){ lastPreview.forEach(p=>cells[idx(p.r,p.c)].classList.remove('preview','valid-preview')); lastPreview=[]; }
-function setPreview(L, exact=false){ clearPreview(); if(!L) return; L.forEach(p=>cells[idx(p.r,p.c)].classList.add(exact?'valid-preview':'preview')); lastPreview=L.slice(); }
-
-gridEl.addEventListener('pointerdown', e=>{
-  const t=e.target.closest('.cell'); if(!t) return;
-  ensureAudio(); e.preventDefault(); gridEl.setPointerCapture(e.pointerId);
-  start=posFromEl(t); setPreview([start], false);
-});
-gridEl.addEventListener('pointermove', e=>{
-  if(!start) return;
-  const el=document.elementFromPoint(e.clientX, e.clientY);
-  const cell=(el && el.classList && el.classList.contains('cell'))? el : e.target.closest('.cell');
-  if(!cell) return;
-  const end=posFromEl(cell);
-  const L=collectLine(start,end);
-  if(!L){ clearPreview(); return; }
-  const exact=isExact(L);
-  if(exact){ setPreview(L, true); }
-  else if(isPrefix(L)){ setPreview(L, false); }
-  else{ clearPreview(); }
-});
-function commitIfValid(){
-  if(!start || !lastPreview.length) return;
-  const exactName=isExact(lastPreview);
-  if(exactName){
-    remaining.delete(exactName);
-    lastPreview.forEach(p=>gridEl.children[idx(p.r,p.c)].classList.add('found','flash'));
-    markBadgeFound(exactName); updateStatus(); playDing();
-    if(remaining.size===0){ statusEl.textContent="رائع! ✅"; playWin(); }
-    applyHints();
-  }
-  clearPreview(); start=null;
+/* مطابقة */
+function collectLine(f,t){
+  if(f.r===t.r && t.c<=f.c){ const L=[]; for(let c=f.c;c>=t.c;c--) L.push({r:f.r,c}); return L; }
+  if(f.c===t.c && t.r>=f.r){ const L=[]; for(let r=f.r;r<=t.r;r++) L.push({r,c:f.c}); return L; }
+  return null;
 }
-gridEl.addEventListener('pointerup',    ()=>commitIfValid());
-gridEl.addEventListener('pointercancel',()=>{ clearPreview(); start=null; });
+function textFrom(L){ let s=''; for(const p of L) s+=board[p.r][p.c]; return s; }
+function isExact(L){ const p=textFrom(L); for(const n of remaining) if(normalize(n)===p) return n; return null; }
+function isPrefix(L){ const p=textFrom(L); for(const n of remaining){ if(normalize(n).startsWith(p)) return true; } return false; }
 
-/* مؤثرات */
+/* مؤثرات صوتية + احتفال */
 let actx=null;
 function ensureAudio(){ if(!actx){ actx=new (window.AudioContext||window.webkitAudioContext)(); } }
 function tone(freq, dur=0.12, type='sine', gain=0.08, when=0){
@@ -348,7 +300,7 @@ function confettiBurst(){
   })();
 }
 
-/* تلميحات */
+/* ===== تلميحات ===== */
 function applyHints(){
   for(let r=0;r<N;r++){
     for(let c=0;c<N;c++){
@@ -357,7 +309,62 @@ function applyHints(){
     }
   }
 }
-btnHints.onclick=()=>{ hintsOn=!hintsOn; btnHints.setAttribute('aria-pressed', hintsOn?'true':'false'); applyHints(); };
+document.getElementById('showHints').onclick=()=>{ hintsOn=!hintsOn; applyHints(); };
+
+/* ===== تفاعل باللمس/السحب — Correctif mobile ===== */
+function xyToCell(x, y){
+  const rect = gridEl.getBoundingClientRect();
+  const styles = getComputedStyle(gridEl);
+  const gap = parseFloat(styles.gap) || 0;
+  const cellSize = (rect.width - gap*(N-1)) / N;
+  let c = Math.floor((x - rect.left) / (cellSize + gap));
+  let r = Math.floor((y - rect.top)  / (cellSize + gap));
+  if (r < 0 || c < 0 || r >= N || c >= N) return null;
+  return cells[idx(r,c)];
+}
+let start=null, lastPreview=[];
+function posFromEl(el){ const i=+el.dataset.index; return {r:Math.floor(i/N), c:i%N}; }
+function clearPreview(){ lastPreview.forEach(p=>cells[idx(p.r,p.c)].classList.remove('preview','valid-preview')); lastPreview=[]; }
+function setPreview(L, exact=false){ clearPreview(); if(!L) return; L.forEach(p=>cells[idx(p.r,p.c)].classList.add(exact?'valid-preview':'preview')); lastPreview=L.slice(); }
+
+function onPointerDown(e){
+  const t = e.target.closest('.cell') || xyToCell(e.clientX, e.clientY);
+  if (!t) return;
+  ensureAudio(); e.preventDefault();
+  start = posFromEl(t); setPreview([start], false);
+}
+function onPointerMove(e){
+  if (!start) return;
+  e.preventDefault();
+  const cell = xyToCell(e.clientX, e.clientY);
+  if (!cell){ clearPreview(); return; }
+  const end = posFromEl(cell);
+  const L = collectLine(start, end);
+  if(!L){ clearPreview(); return; }
+  const exact = isExact(L);
+  if(exact){ setPreview(L, true); }
+  else if(isPrefix(L)){ setPreview(L, false); }
+  else{ clearPreview(); }
+}
+function commitIfValid(){
+  if(!start || !lastPreview.length){ start=null; clearPreview(); return; }
+  const exactName = isExact(lastPreview);
+  if(exactName){
+    remaining.delete(exactName);
+    lastPreview.forEach(p=>gridEl.children[idx(p.r,p.c)].classList.add('found','flash'));
+    markBadgeFound(exactName); updateStatus(); playDing();
+    if(remaining.size===0){ statusEl.textContent="رائع! ✅"; playWin(); }
+    applyHints();
+  }
+  start = null; clearPreview();
+}
+function onPointerUp(){ commitIfValid(); }
+function onPointerLeave(){ start=null; clearPreview(); }
+
+gridEl.addEventListener('pointerdown', onPointerDown, {passive:false});
+gridEl.addEventListener('pointermove', onPointerMove, {passive:false});
+gridEl.addEventListener('pointerleave', onPointerLeave, {passive:true});
+window.addEventListener('pointerup', onPointerUp, {passive:true});
 
 /* Difficulty helper */
 function applyDifficulty(){
@@ -371,15 +378,10 @@ function applyDifficulty(){
 
 /* Events */
 btnRegen.onclick=()=>generate();
-
 sizeSel.onchange=()=>{ N=+sizeSel.value; gridEl.style.setProperty('--n',N); generate(); };
 chunkSel.onchange=()=>{ CHUNK=+chunkSel.value; generate(); };
 difficultySel.onchange=()=>{ applyDifficulty(); generate(); };
-
-categorySel.onchange=()=>{
-  ALL_NAMES=CATEGORIES[categorySel.value].slice();
-  generate();
-};
+categorySel.onchange=()=>{ ALL_NAMES=CATEGORIES[categorySel.value].slice(); generate(); };
 
 /* Fit grid */
 function sizeGridWrap(){
