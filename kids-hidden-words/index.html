@@ -31,7 +31,7 @@ body{
 }
 body::after{
   content:""; position:fixed; inset:auto 0 16px 16px; width:160px; height:70px; z-index:-1;
-  background:url("edufun-logo.png") no-repeat left/contain; opacity:.12; pointer-events:none;
+  background:url("edufun-logo-512.png") no-repeat left/contain; opacity:.12; pointer-events:none;
 }
 
 header, .card{
@@ -42,12 +42,12 @@ header, .card{
   box-shadow:0 10px 30px rgba(34,197,94,.18);
 }
 header{position:sticky;top:0;z-index:5;margin-bottom:12px;}
-.wrap{max-width:1000px;margin:auto;padding:12px}
+.wrap{max-width:1100px;margin:auto;padding:12px}
 
 /* Header */
 .brandbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .brandbox{ display:flex; align-items:center; gap:14px; }
-.brand{ height:56px; width:56px; border-radius:14px; filter:drop-shadow(0 4px 12px rgba(0,0,0,.2)); }
+.brand{ height:56px; width:auto; border-radius:14px; filter:drop-shadow(0 4px 12px rgba(0,0,0,.2)); }
 .brand-title{ line-height:1.1; }
 .brand-title .t1{ font-weight:800; font-size:clamp(20px,3.2vw,30px); color:#064e3b; background:#bbf7d0; padding:6px 12px; border-radius:10px; }
 .brand-title .t2{ margin-top:6px; font-weight:700; color:#065f46; font-size:clamp(14px,2.2vw,18px); }
@@ -58,6 +58,7 @@ header{position:sticky;top:0;z-index:5;margin-bottom:12px;}
 }
 .brand-cta:hover{ background:#16a34a }
 
+/* Controls */
 .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:12px }
 select,button{
   padding:10px 12px;border:1px solid rgba(255,255,255,0.7);
@@ -65,14 +66,16 @@ select,button{
 }
 button.primary{ background:#22c55e;border-color:#22c55e;color:#fff; box-shadow:0 6px 16px rgba(34,197,94,.25) }
 
-main .wrap{display:grid;grid-template-columns:1fr 320px;gap:16px}
+main .wrap{display:grid;grid-template-columns:1fr 340px;gap:16px}
 .grid-wrap{overflow:hidden;height:var(--gridH,70vh);}
+@media (max-width:1000px){
+  main .wrap{ grid-template-columns:1fr; }
+  aside.card{ order:2; }
+}
 @media (max-width:900px){
   header{ position: static; margin-bottom:12px; }
   .controls{ gap:6px; }
   .grid-wrap{ margin-top:0; height:var(--gridH,68vh); }
-  main .wrap{ grid-template-columns:1fr; }
-  aside.card{ margin-top:10px; }
 }
 
 /* Grid */
@@ -106,7 +109,7 @@ hr{border:none;border-top:1px solid #e7f0ff;margin:10px 0}
   <div class="wrap">
     <div class="brandbar" dir="rtl">
       <div class="brandbox">
-        <img class="brand" src="edufun-logo.png" alt="EDUFUN">
+        <img class="brand" src="edufun-logo-512.png" alt="EDUFUN">
         <div class="brand-title">
           <div class="t1">الكلمات الخفية للأطفال</div>
           <div class="t2">مستويات ممتعة وسهلة</div>
@@ -116,7 +119,27 @@ hr{border:none;border-top:1px solid #e7f0ff;margin:10px 0}
     </div>
 
     <div class="controls">
-      <label>المستوى: <select id="level"></select></label>
+      <label>الفئة:
+        <select id="category">
+          <option value="animals">الحيوانات</option>
+          <option value="colors" selected>الألوان</option>
+          <option value="fruits">الفواكه</option>
+          <option value="vegetables">الخضر</option>
+          <option value="transport">وسائل النقل</option>
+          <option value="school">المدرسة</option>
+          <option value="jobs">المهن</option>
+          <option value="shapes">الأشكال</option>
+        </select>
+      </label>
+
+      <label>الصعوبة:
+        <select id="difficulty">
+          <option value="easy" selected>سهل</option>
+          <option value="medium">متوسط</option>
+          <option value="hard">صعب</option>
+        </select>
+      </label>
+
       <label>عدد الكلمات/المستوى:
         <select id="chunk">
           <option value="6" selected>6</option>
@@ -124,12 +147,15 @@ hr{border:none;border-top:1px solid #e7f0ff;margin:10px 0}
           <option value="10">10</option>
         </select>
       </label>
+
       <label>حجم الشبكة:
         <select id="size">
           <option value="8" selected>8 × 8</option>
           <option value="10">10 × 10</option>
+          <option value="12">12 × 12</option>
         </select>
       </label>
+
       <button id="regen" class="primary">شبكة جديدة</button>
       <button id="showHints">تلميحات</button>
     </div>
@@ -155,24 +181,31 @@ hr{border:none;border-top:1px solid #e7f0ff;margin:10px 0}
 </main>
 
 <script>
-/* ——— قوائم بسيطة (حيوانات + ألوان + فواكه + أشياء مدرسية …) ——— */
-const ALL_NAMES=[
-"قطة","كلب","حصان","سمك","عصفور","نحل","أسد","ثعلب","بقرة","جمل",
-"أحمر","أزرق","أخضر","أصفر","وردي","برتقالي","بنفسجي","أسود","أبيض","بني",
-"تفاح","موز","برتقال","عنب","فراولة","أناناس","كرز","بطيخ","كمثرى","رمان",
-"قلم","ممحاة","دفتر","كتاب","مسطرة","حقيبة","مبراة","ألوان","كرسي","طاولة"
-];
+/* ——— القوائم حسب الفئة ——— */
+const CATEGORIES={
+  animals: ["قطة","كلب","حصان","سمك","عصفور","نحل","أسد","ثعلب","بقرة","جمل","ذئب","غزال","حمار","فار","قرد"],
+  colors:  ["أحمر","أزرق","أخضر","أصفر","وردي","برتقالي","بنفسجي","أسود","أبيض","بني","ذهبي","فضي"],
+  fruits:  ["تفاح","موز","برتقال","عنب","فراولة","أناناس","كرز","بطيخ","كمثرى","رمان","توت","خوخ","ليمون"],
+  vegetables:["طماطم","خيار","جزر","بطاطا","بصل","ثوم","فلفل","قرع","خس","كرنب","سبانخ","فول"],
+  transport:["سيارة","حافلة","قطار","طائرة","دراجة","سفينة","قارب","شاحنة","مترو","ترام"],
+  school:  ["قلم","ممحاة","دفتر","كتاب","مسطرة","حقيبة","مبراة","ألوان","كرسي","طاولة","سبورة","طبشور"],
+  jobs:    ["طبيب","معلم","مهندس","ممرض","طيار","بحار","نجار","حداد","سائق","فلاح","خباز","شرطي"],
+  shapes:  ["دائرة","مربع","مثلث","مستطيل","نجمة","قلب","معين","بيضاوي","شكل","مضلع"]
+};
 
-/* ===== نفس محرّك اللعبة (مبسّط) ===== */
+/* ===== محرّك اللعبة ===== */
 const gridEl=document.getElementById('grid'),
-levelSel=document.getElementById('level'),
+levelSel=null,                       // غير مستخدم هنا
 sizeSel=document.getElementById('size'),
 chunkSel=document.getElementById('chunk'),
 targetsEl=document.getElementById('targets'),
 statusEl=document.getElementById('status'),
 btnRegen=document.getElementById('regen'),
-btnHints=document.getElementById('showHints');
+btnHints=document.getElementById('showHints'),
+categorySel=document.getElementById('category'),
+difficultySel=document.getElementById('difficulty');
 
+let ALL_NAMES=CATEGORIES[categorySel.value].slice();
 let N=+sizeSel.value, CHUNK=+chunkSel.value;
 let LEVELS=[], cells=[], board=[], isWord=[], targetNames=[], remaining=new Set();
 let hintsOn=false;
@@ -185,9 +218,6 @@ const idx=(r,c)=>r*N+c, inBounds=(r,c)=>r>=0&&r<N&&c>=0&&c<N;
 function rebuildLevels(){
   LEVELS=[];
   for(let i=0;i<ALL_NAMES.length;i+=CHUNK) LEVELS.push(ALL_NAMES.slice(i,i+CHUNK));
-  levelSel.innerHTML='';
-  LEVELS.forEach((L,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`المستوى ${i+1} (${L.length} كلمة)`;levelSel.appendChild(o);});
-  levelSel.value=0;
 }
 rebuildLevels();
 
@@ -218,8 +248,10 @@ function tryPlace(word){
 }
 function pickSubset(a,k){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x.slice(0,Math.min(k,x.length));}
 
-function generate(i){
-  const base=LEVELS[i].slice(), eligible=base.filter(n=>normalize(n).length<=N);
+function generate(){
+  rebuildLevels();
+
+  const eligible=ALL_NAMES.filter(n=>normalize(n).length<=N);
   let names=pickSubset(eligible, Math.min(CHUNK, eligible.length));
   names.sort((a,b)=>normalize(b).length-normalize(a).length);
 
@@ -253,40 +285,7 @@ function renderTargets(){
 function markBadgeFound(n){ [...targetsEl.children].forEach(x=>{ if(x.dataset.name===n) x.classList.add('found'); }); }
 function updateStatus(){ statusEl.textContent=`المتبقي: ${remaining.size} / ${targetNames.length}`; }
 
-function collectLine(f,t){
-  if(f.r===t.r && t.c<=f.c){ const L=[]; for(let c=f.c;c>=t.c;c--) L.push({r:f.r,c}); return L; }
-  if(f.c===t.c && t.r>=f.r){ const L=[]; for(let r=f.r;r<=t.r;r++) L.push({r,c:f.c}); return L; }
-  return null;
-}
-function textFrom(L){ let s=''; for(const p of L) s+=board[p.r][p.c]; return s; }
-function isExact(L){ const p=textFrom(L); for(const n of remaining) if(normalize(n)===p) return n; return null; }
-function isPrefix(L){ const p=textFrom(L); for(const n of remaining){ if(normalize(n).startsWith(p)) return true; } return false; }
-
-/* مؤثرات */
-let actx=null;
-function ensureAudio(){ if(!actx){ actx=new (window.AudioContext||window.webkitAudioContext)(); } }
-function tone(freq, dur=0.12, type='sine', gain=0.08, when=0){
-  ensureAudio(); const t=actx.currentTime+when;
-  const osc=actx.createOscillator(), g=actx.createGain();
-  osc.type=type; osc.frequency.value=freq;
-  g.gain.value=gain; g.gain.setValueAtTime(gain,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-  osc.connect(g).connect(actx.destination); osc.start(t); osc.stop(t+dur);
-}
-function playDing(){ tone(880,0.10,'triangle',0.10,0); tone(1320,0.12,'triangle',0.08,0.07); }
-function playWin(){ [660,880,990,1320].forEach((f,i)=>tone(f,0.15,'square',0.09,i*0.08)); confettiBurst(); }
-function confettiBurst(){
-  const c=document.createElement('canvas'); c.width=innerWidth; c.height=innerHeight;
-  Object.assign(c.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:9999});
-  document.body.appendChild(c);
-  const ctx=c.getContext('2d'), pcs=[], cols=['#ff6b6b','#ffd166','#06d6a0','#22c55e','#3b82f6'];
-  for(let i=0;i<160;i++) pcs.push({x:Math.random()*c.width,y:-20-Math.random()*200,r:6+Math.random()*6,col:cols[(Math.random()*cols.length)|0],vx:-1+Math.random()*2,vy:2+Math.random()*2,rot:Math.random()*Math.PI,vr:(-0.1+Math.random()*0.2)});
-  let t=0; (function a(){ ctx.clearRect(0,0,c.width,c.height);
-    pcs.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.05; p.rot+=p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.col; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r); ctx.restore(); });
-    if(t++<180) requestAnimationFrame(a); else c.remove();
-  })();
-}
-
-/* تفاعل */
+/* سحب/إسقاط */
 let start=null, lastPreview=[];
 function posFromEl(el){ const i=+el.dataset.index; return {r:Math.floor(i/N), c:i%N}; }
 function clearPreview(){ lastPreview.forEach(p=>cells[idx(p.r,p.c)].classList.remove('preview','valid-preview')); lastPreview=[]; }
@@ -325,6 +324,31 @@ function commitIfValid(){
 gridEl.addEventListener('pointerup',    ()=>commitIfValid());
 gridEl.addEventListener('pointercancel',()=>{ clearPreview(); start=null; });
 
+/* مؤثرات */
+let actx=null;
+function ensureAudio(){ if(!actx){ actx=new (window.AudioContext||window.webkitAudioContext)(); } }
+function tone(freq, dur=0.12, type='sine', gain=0.08, when=0){
+  ensureAudio(); const t=actx.currentTime+when;
+  const osc=actx.createOscillator(), g=actx.createGain();
+  osc.type=type; osc.frequency.value=freq;
+  g.gain.value=gain; g.gain.setValueAtTime(gain,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  osc.connect(g).connect(actx.destination); osc.start(t); osc.stop(t+dur);
+}
+function playDing(){ tone(880,0.10,'triangle',0.10,0); tone(1320,0.12,'triangle',0.08,0.07); }
+function playWin(){ [660,880,990,1320].forEach((f,i)=>tone(f,0.15,'square',0.09,i*0.08)); confettiBurst(); }
+function confettiBurst(){
+  const c=document.createElement('canvas'); c.width=innerWidth; c.height=innerHeight;
+  Object.assign(c.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:9999});
+  document.body.appendChild(c);
+  const ctx=c.getContext('2d'), pcs=[], cols=['#ff6b6b','#ffd166','#06d6a0','#22c55e','#3b82f6'];
+  for(let i=0;i<160;i++) pcs.push({x:Math.random()*c.width,y:-20-Math.random()*200,r:6+Math.random()*6,col:cols[(Math.random()*cols.length)|0],vx:-1+Math.random()*2,vy:2+Math.random()*2,rot:Math.random()*Math.PI,vr:(-0.1+Math.random()*0.2)});
+  let t=0; (function a(){ ctx.clearRect(0,0,c.width,c.height);
+    pcs.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.05; p.rot+=p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.col; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r); ctx.restore(); });
+    if(t++<180) requestAnimationFrame(a); else c.remove();
+  })();
+}
+
+/* تلميحات */
 function applyHints(){
   for(let r=0;r<N;r++){
     for(let c=0;c<N;c++){
@@ -335,12 +359,29 @@ function applyHints(){
 }
 btnHints.onclick=()=>{ hintsOn=!hintsOn; btnHints.setAttribute('aria-pressed', hintsOn?'true':'false'); applyHints(); };
 
-btnRegen.onclick=()=>generate(+levelSel.value);
-sizeSel.onchange=()=>{ N=+sizeSel.value; gridEl.style.setProperty('--n',N); generate(+levelSel.value); };
-chunkSel.onchange=()=>{ CHUNK=+chunkSel.value; rebuildLevels(); generate(+levelSel.value); };
-levelSel.onchange=()=>generate(+levelSel.value);
+/* Difficulty helper */
+function applyDifficulty(){
+  const d=difficultySel.value;
+  if(d==='easy'){ sizeSel.value='8';  chunkSel.value='6'; }
+  if(d==='medium'){ sizeSel.value='10'; chunkSel.value='8'; }
+  if(d==='hard'){ sizeSel.value='12'; chunkSel.value='10'; }
+  N=+sizeSel.value; CHUNK=+chunkSel.value;
+  gridEl.style.setProperty('--n',N);
+}
 
-/* ملاءمة */
+/* Events */
+btnRegen.onclick=()=>generate();
+
+sizeSel.onchange=()=>{ N=+sizeSel.value; gridEl.style.setProperty('--n',N); generate(); };
+chunkSel.onchange=()=>{ CHUNK=+chunkSel.value; generate(); };
+difficultySel.onchange=()=>{ applyDifficulty(); generate(); };
+
+categorySel.onchange=()=>{
+  ALL_NAMES=CATEGORIES[categorySel.value].slice();
+  generate();
+};
+
+/* Fit grid */
 function sizeGridWrap(){
   const header=document.querySelector('header');
   const wrap=gridEl.parentElement;
@@ -357,8 +398,9 @@ function refitAll(){ sizeGridWrap(); fitGrid(); }
 window.addEventListener('resize', refitAll);
 new ResizeObserver(refitAll).observe(document.body);
 
-/* تشغيل */
-generate(0);
+/* Start */
+applyDifficulty();
+generate();
 refitAll();
 </script>
 </body>
