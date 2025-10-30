@@ -3,16 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>EDUFUN • اختبار الأسماء الحسنى</title>
+<title>الكلمات الخفية • كلمات حول الأسماء الحسنى</title>
+
 <style>
-:root{
-  --ink:#0f172a; --accent:#1f7ae0; --ok:#16a34a; --warn:#f59e0b; --err:#e63946;
-  --glass: rgba(255,255,255,0.88);
+/* === Polices === */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap');
+@font-face{
+  font-family:"NotoKufiArabicLocal";
+  src:url("../assets/NotoKufiArabic.ttf") format("truetype");
+  font-display:swap;
 }
+
+/* === Thème / variables === */
+:root{
+  --ink:#0f172a; --accent:#1f7ae0; --ok:#16a34a; --warn:#f59e0b;
+  --glass: rgba(255,255,255,0.85);
+  --cell: 44px;
+
+  --brand:#1f7ae0;
+  --brand-deep:#1557a8;
+  --muted:#29425f;
+  --ring:rgba(31,122,224,.25);
+}
+
+/* ===== خلفية ===== */
 html,body{height:100%}
 body{
   margin:0; color:var(--ink);
-  font-family:system-ui,-apple-system,"Noto Kufi Arabic","Cairo",Tahoma,Arial;
+  font-family:"Tajawal","NotoKufiArabicLocal","Noto Kufi Arabic","Cairo",system-ui,-apple-system,"Segoe UI",Tahoma,Arial;
   background: linear-gradient(35deg,#55c6ff 0%, #1f7ae0 100%) fixed;
 }
 body::before{
@@ -25,243 +43,255 @@ body::after{
   background:url("edufun-logo.png") no-repeat left/contain;
   opacity:.10; pointer-events:none;
 }
-header,.card{
-  background:var(--glass);
+
+/* ===== حاويات زجاجية ===== */
+header, .card{
+  background: var(--glass);
   backdrop-filter: blur(10px);
-  border:1px solid rgba(255,255,255,0.6);
+  border:1px solid rgba(255,255,255,0.65);
   border-radius:18px;
   box-shadow:0 10px 30px rgba(31,122,224,.18);
 }
-.wrap{max-width:920px;margin:auto;padding:12px}
-header{position:sticky;top:0;z-index:5;margin-bottom:12px}
-.brandbar{display:flex;align-items:center;gap:12px}
-.brand{height:56px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.16))}
-@media (max-width:520px){.brand{height:48px}}
-h1{margin:0;font-size:22px}
+header{position:sticky;top:0;z-index:5;margin-bottom:12px;}
+.wrap{max-width:1000px;margin:auto;padding:12px}
 
-.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center}
-button,select{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.65);background:#fff;font-size:14px}
-button.primary{background:#1f7ae0;border-color:#1f7ae0;color:#fff;box-shadow:0 6px 16px rgba(31,122,224,.25)}
-button.flat{background:#f8fbff}
-.stat{margin-inline-start:auto;font-size:13px;opacity:.9;display:flex;gap:10px;align-items:center}
-.hearts{display:inline-flex;gap:4px}
-.heart{font-size:18px;opacity:.35}
-.heart.alive{opacity:1}
+/* ===== هيدر نظيف ===== */
+.brandbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.brandbox{ display:flex; align-items:center; gap:14px; }
+.brand{ height:56px; width:56px; border-radius:14px; filter:drop-shadow(0 4px 12px rgba(0,0,0,.2)); }
+.brand-title{ line-height:1.1; }
+.brand-title .t1{ font-weight:800; font-size:clamp(20px,3.2vw,30px); color:#fff; background:var(--brand); padding:6px 12px; border-radius:10px; }
+.brand-title .t2{ margin-top:6px; font-weight:700; color:var(--brand-deep); font-size:clamp(14px,2.2vw,18px); }
+.brand-cta{
+  display:inline-flex; align-items:center; gap:10px;
+  background:#1f7ae0; color:#fff; border:none; border-radius:12px;
+  padding:10px 14px; font-weight:800; cursor:pointer; box-shadow:0 8px 22px rgba(31,122,224,.28);
+}
+.brand-cta:hover{ background:#1557a8 }
 
-main .wrap{display:grid;grid-template-columns:1fr;gap:12px}
-.card{padding:18px}
-.q-title{font-size:clamp(18px,4.8vw,22px);margin:0 0 8px}
-.name{font-size:clamp(28px,8vw,40px);font-weight:800;color:#0b3a8b;margin:6px 0 10px}
-.progressbar{height:10px;background:#e7f0ff;border-radius:999px;overflow:hidden;margin:8px 0 14px;border:1px solid #e5eefc}
-.progressbar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#53b3ff,#1f7ae0);transition:width .3s}
-.options{display:grid;gap:10px;margin-top:6px}
-.option{padding:14px;border-radius:14px;border:1px solid #e5eefc;background:#fff;text-align:right;font-size:16px}
-.option.correct{background:#e8f7ee;border-color:#b7e3c8}
-.option.wrong{background:#ffe8e8;border-color:#ffd1d1}
-.meta{display:flex;gap:8px;align-items:center;margin-top:10px}
-.meta .score{font-weight:700}
-.result{margin-top:10px;min-height:24px;font-size:14px}
-.footer{font-size:12px;color:#eef6ff;margin-top:6px;text-shadow:0 1px 2px rgba(0,0,0,.2);text-align:center}
-.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px}
-.hide{display:none}
-.center{text-align:center}
-.big{font-size:clamp(20px,5.2vw,28px)}
+/* لوحة خيارات */
+.controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:12px }
+select,button{
+  padding:10px 12px;border:1px solid rgba(255,255,255,0.65);
+  background:rgba(255,255,255,0.96);border-radius:12px;font-size:14px
+}
+button.primary{ background:#1f7ae0;border-color:#1f7ae0;color:#fff; box-shadow:0 6px 16px rgba(31,122,224,.25) }
+
+/* تخطيط */
+main .wrap{display:grid;grid-template-columns:1fr 320px;gap:16px}
+.grid-wrap{overflow:hidden;height:var(--gridH,70vh);}
+@media (max-width:900px){
+  header{ position: static; margin-bottom:12px; }
+  .controls{ gap:6px; }
+  .grid-wrap{ margin-top:0; height:var(--gridH,68vh); }
+  main .wrap{ grid-template-columns:1fr; }
+  aside.card{ margin-top:10px; }
+}
+
+/* الشبكة */
+.grid{ --n:10; display:grid; grid-template-columns:repeat(var(--n),var(--cell)); grid-auto-rows:var(--cell); gap:4px; user-select:none; touch-action:none; padding:6px; }
+.cell{
+  width:var(--cell);height:var(--cell);
+  border-radius:14px;background:#fff;border:1px solid #eaf1fb;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(16px,calc(var(--cell)*.55),28px);
+  font-weight:800;transition:transform .12s,background .3s,border-color .3s;
+  box-shadow:0 2px 6px rgba(31,122,224,.08);
+}
+.cell.preview{ outline:2px dashed #1f7ae0; }
+.cell.valid-preview{ outline:2px solid var(--warn); }
+.cell.hint{ background:#fff3bf; border-color:#ffd04a; box-shadow:inset 0 0 0 2px #ffd04a33, 0 2px 6px rgba(31,122,224,.08); }
+.cell.found{background:#e8f7ee;border-color:#b7e3c8;color:#055a43}
+.cell.flash{animation:flashOk 1s ease-in-out 3}
+@keyframes flashOk{0%,100%{background:#e8f7ee}50%{background:#16a34a;color:#fff;transform:scale(1.05)}}
+
+/* الأهداف */
+.target{display:flex;flex-wrap:wrap;gap:8px}
+.badge{background:#fff;border:1px solid #e5eefc;padding:8px 11px;border-radius:999px;font-size:14px;box-shadow:0 1px 3px rgba(31,122,224,.08)}
+.badge.found{background:#e8f7ee;border-color:#b7e3c8;color:#055a43}
+.help{font-size:13px;color:var(--muted);line-height:1.7}
+.footer{font-size:12px;color:#eef6ff;margin-top:6px;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+hr{border:none;border-top:1px solid #e7f0ff;margin:10px 0}
 </style>
 </head>
 <body>
+
 <header>
   <div class="wrap">
-    <div class="brandbar">
-      <img class="brand" src="edufun-logo.png" alt="EDUFUN">
-      <h1>اختبار الأسماء الحسنى</h1>
-    </div>
-    <div class="controls">
-      <button id="btnSpeak" class="flat">🔊 استمع</button>
-      <button id="btnShuffle" class="flat">خلط</button>
-      <button id="btnRestart" class="primary">بدء جولة جديدة</button>
-      <div class="stat">
-        <div class="hearts" id="hearts">
-          <span class="heart alive">❤</span>
-          <span class="heart alive">❤</span>
-          <span class="heart alive">❤</span>
+    <div class="brandbar" dir="rtl">
+      <div class="brandbox">
+        <img class="brand" src="edufun-logo.png" alt="EDUFUN">
+        <div class="brand-title">
+          <div class="t1">الكلمات الخفية</div>
+          <div class="t2">كلمات حول الأسماء الحسنى</div>
         </div>
-        <span>النقاط: <b id="score">0</b></span>
       </div>
+      <button class="brand-cta" onclick="location.href='../'">الصفحة الرئيسية</button>
+    </div>
+
+    <div class="controls">
+      <label>المستوى: <select id="level"></select></label>
+      <label>عدد الكلمات/المستوى:
+        <select id="chunk">
+          <option value="6">6</option>
+          <option value="8" selected>8</option>
+          <option value="10">10</option>
+          <option value="12">12</option>
+        </select>
+      </label>
+      <label>حجم الشبكة:
+        <select id="size">
+          <option value="8">8 × 8</option>
+          <option value="10" selected>10 × 10</option>
+          <option value="12">12 × 12</option>
+        </select>
+      </label>
+      <button id="regen" class="primary">إعادة توليد الشبكة</button>
+      <button id="showHints">إظهار/إخفاء تلميحات</button>
     </div>
   </div>
 </header>
 
 <main>
   <div class="wrap">
-    <section class="card" id="panelQuiz">
-      <div class="progressbar"><i id="bar"></i></div>
-      <h3 class="q-title" id="qTitle">اختر المعنى الصحيح للاسم:</h3>
-      <div class="name" id="qName">الله</div>
-      <div class="options" id="options"></div>
-      <div class="meta">
-        <span>السؤال <b id="nIdx">1</b> / <b id="nTotal">10</b></span>
-        <span class="score">• النقاط: <span id="score2">0</span></span>
-      </div>
-      <div class="result" id="qResult"></div>
+    <section class="card grid-wrap">
+      <div id="grid" class="grid"></div>
+      <div class="footer" id="status"></div>
     </section>
 
-    <section class="card center hide" id="panelEnd">
-      <div class="big" id="endTitle">أحسنت! ✅</div>
-      <p id="endMsg">نتيجتك 10 / 10 — رائع!</p>
-      <div class="actions">
-        <button class="primary" id="playAgain">جولة جديدة</button>
-        <button class="flat" id="reviewWrong">مراجعة الأخطاء</button>
+    <aside class="card">
+      <h3 id="listTitle">الكلمات المستهدفة</h3>
+      <div id="targets" class="target"></div>
+      <hr>
+      <div class="help">
+        ابحث أفقيًا يمينًا ⇠ يسارًا أو عموديًا أعلى ⇣ أسفل. (لا قطريات)
       </div>
-    </section>
-
-    <div class="footer">EDUFUN • يعمل على الهاتف والحاسوب • 10 أسئلة لكل جولة</div>
+    </aside>
   </div>
 </main>
 
 <script>
-/* البيانات: الأسماء مع معاني موجزة (نفس مصدر البطاقات) */
-const DATA=[
-{n:"الله",m:"اسم الجلالة، المعبود بحق، الجامع لصفات الكمال."},
-{n:"الرحمن",m:"كثير الرحمة في الدنيا والآخرة، رحمةً عامةً بكل خلقه."},
-{n:"الرحيم",m:"يخصّ أولياءه بالمغفرة والرحمة في الآخرة."},
-{n:"الملك",m:"المالك لكل شيء، المتصرف في ملكه كيف يشاء."},
-{n:"القدوس",m:"المنزّه عن كل نقص وعيب."},
-{n:"السلام",m:"السالم من كل نقص، ومانح السلام لعباده."},
-{n:"المؤمن",m:"المصدِّق رسله، المؤمِّن لعباده من الخوف."},
-{n:"المهيمن",m:"الرقيب الشهيد على عباده، القائم على كل شيء."},
-{n:"العزيز",m:"الذي لا يُغلب ولا يُقهر."},
-{n:"الجبار",m:"العالي القاهر، وجابر كسر الضعفاء."},
-{n:"المتكبر",m:"المتعالي عن صفات المخلوقين."},
-{n:"الخالق",m:"مقدِّر الأشياء ومبدعها على غير مثال سابق."},
-{n:"البارئ",m:"خالق الخلق مميِّزًا بعضهم عن بعض."},
-{n:"المصور",m:"مُعطي كل مخلوق صورته."},
-{n:"الغفار",m:"كثير المغفرة لعباده مع ستر الذنب."},
-{n:"القهار",m:"القاهر فوق عباده."},
-{n:"الوهاب",m:"الذي يعطي بغير عوض."},
-{n:"الرزاق",m:"الذي يرزق عباده جميعًا."},
-{n:"الفتاح",m:"الذي يفتح الرحمة والرزق ويحكم بالحق."},
-{n:"العليم",m:"العالم بكل شيء."},
-{n:"القابض",m:"القابض للأرزاق والأنفاس بحكمته."},
-{n:"الباسط",m:"الذي يبسط الرزق والرحمة."},
-{n:"الخافض",m:"يخفض أهل الباطل."},
-{n:"الرافع",m:"يرفع أهل الحق."},
-{n:"المعز",m:"المعز لمن يشاء."},
-{n:"المذل",m:"المذل لمن يشاء."},
-{n:"السميع",m:"الذي يسمع السر والنجوى."},
-{n:"البصير",m:"يبصر كل شيء ظاهرًا وباطنًا."},
-{n:"الحكم",m:"الحاكم بين عباده بالقسط."},
-{n:"العدل",m:"المقيم للعدل، المنزّه عن الظلم."},
-{n:"اللطيف",m:"الرفيق بعباده، يُوصل الخير بلطف."},
-{n:"الخبير",m:"العليم ببواطن الأمور."},
-{n:"الحليم",m:"لا يعجل مع قدرته."},
-{n:"العظيم",m:"عظيم الذات والصفات."},
-{n:"الغفور",m:"يغفر الذنوب جميعًا لمن تاب."},
-{n:"الشكور",m:"يجزي القليل بكثير من الثواب."},
-{n:"العلي",m:"المرتفع قدرًا وقهرًا."},
-{n:"الكبير",m:"جلّ قدره، وكل شيء دونه صغير."},
-{n:"الحفيظ",m:"يحفظ خلقه وأعمالهم."},
-{n:"المقيت",m:"الرازق الكافي الذي يوصل الأقوات."},
-{n:"الحسيب",m:"الكافي، والمحاسِب على الأعمال."},
-{n:"الجليل",m:"العظيم ذو الجلال والكمال."},
-{n:"الكريم",m:"الذي يعطي بلا حساب."},
-{n:"الرقيب",m:"الحافظ المراقِب لكل شيء."},
-{n:"المجيب",m:"يستجيب دعاء الداعين."},
-{n:"الواسع",m:"وسع علمه ورحمته كل شيء."},
-{n:"الحكيم",m:"لا يفعل إلا لحكمة."},
-{n:"الودود",m:"المحبّ لأوليائه."},
-{n:"المجيد",m:"العظيم الكريم كثير الإحسان."},
-{n:"الباعث",m:"يبعث الخلق ويبعث الهمم للطاعة."},
-{n:"الشهيد",m:"المطّلع على كل شيء."},
-{n:"الحق",m:"الوجود الثابت."},
-{n:"الوكيل",m:"الكافي المتكفّل."},
-{n:"القوي",m:"لا يغالبه غالب."},
-{n:"المتين",m:"الثابت الذي لا يلحقه إعياء."},
-{n:"الولي",m:"متولّي أمور الصالحين."},
-{n:"الحميد",m:"المحمود على كل حال."},
-{n:"المحصي",m:"أحصى كل شيء عددًا."},
-{n:"المبدئ",m:"المبتدئ للخلق."},
-{n:"المعيد",m:"يعيد الخلق بعد الموت."},
-{n:"المحيي",m:"معطي الحياة."},
-{n:"المميت",m:"قابض الأرواح حين الأجل."},
-{n:"الحي",m:"لا يموت ولا تأخذه سنة ولا نوم."},
-{n:"القيوم",m:"القائم بنفسه المقيم لغيره."},
-{n:"الواجد",m:"الغني الذي لا يفتقر."},
-{n:"الماجد",m:"العظيم المكرم."},
-{n:"الواحد",m:"المتفرد بالألوهية."},
-{n:"الصمد",m:"السيد المقصود في الحوائج."},
-{n:"القادر",m:"له القدرة الشاملة."},
-{n:"المقتدر",m:"بالغ القدرة."},
-{n:"المقدم",m:"يقدّم من يشاء."},
-{n:"المؤخر",m:"يؤخر من يشاء."},
-{n:"الأول",m:"لا شيء قبله."},
-{n:"الآخر",m:"لا شيء بعده."},
-{n:"الظاهر",m:"ظهرت دلائل وجوده."},
-{n:"الباطن",m:"المطّلع على السرائر."},
-{n:"الوالي",m:"المالك المتصرف."},
-{n:"المتعالي",m:"المنزّه عن النقص."},
-{n:"البر",m:"كثير الإحسان."},
-{n:"التواب",m:"يقبل توبة التائبين."},
-{n:"المنتقم",m:"المعاقِب للمجرمين بعدل."},
-{n:"العفو",m:"يمحو الذنوب ويتجاوز عن السيئات."},
-{n:"الرؤوف",m:"غاية الرحمة والرأفة."},
-{n:"مالك الملك",m:"المتصرّف في الملك."},
-{n:"ذو الجلال والإكرام",m:"صاحب العظمة والكمال والإنعام."},
-{n:"المقسط",m:"العادل المنصِف."},
-{n:"الجامع",m:"يجمع الخلق ليوم الحساب."},
-{n:"الغني",m:"لا يحتاج إلى أحد."},
-{n:"المغني",m:"يغني من يشاء."},
-{n:"المانع",m:"يمنع الضر عمّن يشاء."},
-{n:"الضار",m:"يقدّر الضر عدلًا وابتلاءً."},
-{n:"النافع",m:"يوصل الخير لعباده."},
-{n:"النور",m:"منوِّر القلوب بالهدى."},
-{n:"الهادي",m:"يهدي إلى الصراط المستقيم."},
-{n:"البديع",m:"أبدع الخلق على غير مثال."},
-{n:"الباقي",m:"الدائم الذي لا يزول."},
-{n:"الوارث",m:"الباقي بعد فناء الخلق."},
-{n:"الرشيد",m:"المرشد إلى سبيل الرشاد."},
-{n:"الصبور",m:"يمهل ولا يهمل."}
+/* ——— كلمات مرتبطة بالأسماء الحسنى (أمثلة) ——— */
+const ALL_NAMES=[
+"رحمة","مغفرة","رزق","علم","حكمة","قوة","نور","هداية","لطف","عفو",
+"قرب","إحسان","عدل","ملك","غنى","كرم","رحيم","رحمن","بديع","مجيد",
+"رؤوف","غفور","قدير","سميع","بصير","عليم","خالق","رازق","شكور","صمد",
+"هادي","نور","والي","بر","غني","مغني","نافع","مانع","رقيب","قوي",
+"متين","مجير","نصير","وكيل","ودود","مجيب","واسع","قريب","شهيد","حق"
 ];
 
-/* الحالة العامة */
-const Q_TOTAL = 10;
-let order = Array.from(DATA.keys());
-let quizOrder = [];       // فهارس الأسئلة المختارة لهذه الجولة
-let idx = 0;              // رقم السؤال الحالي (0..Q_TOTAL-1)
-let score = 0;
-let lives = 3;
-let wrongLog = [];        // للاطلاع بعد النهاية
+/* ===== نفس منطق الشبكة والمؤثرات كما في اللعبة الأولى ===== */
+const gridEl=document.getElementById('grid'),
+levelSel=document.getElementById('level'),
+sizeSel=document.getElementById('size'),
+chunkSel=document.getElementById('chunk'),
+targetsEl=document.getElementById('targets'),
+statusEl=document.getElementById('status'),
+btnRegen=document.getElementById('regen'),
+btnHints=document.getElementById('showHints');
 
-/* عناصر DOM */
-const qName = document.getElementById('qName');
-const optionsEl = document.getElementById('options');
-const qResult = document.getElementById('qResult');
-const nIdx = document.getElementById('nIdx');
-const nTotal = document.getElementById('nTotal');
-const score1 = document.getElementById('score');
-const score2 = document.getElementById('score2');
-const bar = document.getElementById('bar');
-const heartsEl = document.getElementById('hearts');
-const panelQuiz = document.getElementById('panelQuiz');
-const panelEnd  = document.getElementById('panelEnd');
-const endTitle  = document.getElementById('endTitle');
-const endMsg    = document.getElementById('endMsg');
+let N=+sizeSel.value, CHUNK=+chunkSel.value;
+let LEVELS=[], cells=[], board=[], isWord=[], targetNames=[], remaining=new Set();
+let hintsOn=false;
 
-/* صوتيات بسيطة */
+const AR_RANDOM="ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
+const randLetter=()=>AR_RANDOM[Math.floor(Math.random()*AR_RANDOM.length)];
+const normalize=s=>s.replace(/\s+/g,'').replace(/ـ/g,'').replace(/[^\u0600-\u06FF]/g,'');
+const idx=(r,c)=>r*N+c, inBounds=(r,c)=>r>=0&&r<N&&c>=0&&c<N;
+
+function rebuildLevels(){
+  LEVELS=[];
+  for(let i=0;i<ALL_NAMES.length;i+=CHUNK) LEVELS.push(ALL_NAMES.slice(i,i+CHUNK));
+  levelSel.innerHTML='';
+  LEVELS.forEach((L,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`المستوى ${i+1} (${L.length} كلمة)`;levelSel.appendChild(o);});
+  levelSel.value=0;
+}
+rebuildLevels();
+
+function buildGrid(){
+  gridEl.innerHTML=''; cells=[];
+  for(let i=0;i<N*N;i++){const d=document.createElement('div');d.className='cell';d.dataset.index=i;gridEl.appendChild(d);cells.push(d);}
+}
+
+function tryPlace(word){
+  const chars=normalize(word).split(''), L=chars.length;
+  if(L>N) return false;
+  const dirs=[{dr:0,dc:-1},{dr:1,dc:0}];
+  for(let t=0;t<420;t++){
+    const dir=dirs[Math.random()<.6?0:1];
+    let r,c;
+    if(dir.dc===-1){ r=Math.floor(Math.random()*N); c=Math.floor(Math.random()*(N-1))+(L-1); }
+    else{ r=Math.floor(Math.random()*(N-L)); c=Math.floor(Math.random()*N); }
+    let ok=true;
+    for(let k=0;k<L;k++){
+      const rr=r+dir.dr*k, cc=c+dir.dc*k;
+      if(!inBounds(rr,cc) || (board[rr][cc] && board[rr][cc]!==chars[k])){ ok=false; break; }
+    }
+    if(!ok) continue;
+    for(let k=0;k<L;k++){ const rr=r+dir.dr*k, cc=c+dir.dc*k; board[rr][cc]=chars[k]; isWord[rr][cc]=true; }
+    return true;
+  }
+  return false;
+}
+function pickSubset(a,k){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x.slice(0,Math.min(k,x.length));}
+
+function generate(i){
+  const base=LEVELS[i].slice(), eligible=base.filter(n=>normalize(n).length<=N);
+  let names=pickSubset(eligible, Math.min(CHUNK, eligible.length));
+  names.sort((a,b)=>normalize(b).length-normalize(a).length);
+
+  board  = Array.from({length:N},()=>Array(N).fill(null));
+  isWord = Array.from({length:N},()=>Array(N).fill(false));
+
+  let placed=true;
+  for(const nm of names){ if(!tryPlace(nm)){ placed=false; break; } }
+  if(!placed){
+    for(let attempt=0; attempt<3 && !placed; attempt++){
+      names.pop();
+      board  = Array.from({length:N},()=>Array(N).fill(null));
+      isWord = Array.from({length:N},()=>Array(N).fill(false));
+      placed=true;
+      for(const nm of names){ if(!tryPlace(nm)){ placed=false; break; } }
+    }
+  }
+
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++) if(!board[r][c]) board[r][c]=randLetter();
+  targetNames=names; remaining=new Set(names);
+  buildGrid(); for(let r=0;r<N;r++)for(let c=0;c<N;c++) cells[idx(r,c)].textContent=board[r][c];
+  renderTargets(); updateStatus(); refitAll(); applyHints();
+}
+
+function renderTargets(){
+  const listTitle=document.getElementById('listTitle');
+  listTitle.textContent=`الكلمات المستهدفة — (${targetNames.length} كلمة)`;
+  targetsEl.innerHTML='';
+  targetNames.forEach(n=>{ const b=document.createElement('span'); b.className='badge'; b.dataset.name=n; b.textContent=n; targetsEl.appendChild(b); });
+}
+function markBadgeFound(n){ [...targetsEl.children].forEach(x=>{ if(x.dataset.name===n) x.classList.add('found'); }); }
+function updateStatus(){ statusEl.textContent=`المتبقي: ${remaining.size} / ${targetNames.length}`; }
+
+function collectLine(f,t){
+  if(f.r===t.r && t.c<=f.c){ const L=[]; for(let c=f.c;c>=t.c;c--) L.push({r:f.r,c}); return L; }
+  if(f.c===t.c && t.r>=f.r){ const L=[]; for(let r=f.r;r<=t.r;r++) L.push({r,c:f.c}); return L; }
+  return null;
+}
+function textFrom(L){ let s=''; for(const p of L) s+=board[p.r][p.c]; return s; }
+function isExact(L){ const p=textFrom(L); for(const n of remaining) if(normalize(n)===p) return n; return null; }
+function isPrefix(L){ const p=textFrom(L); for(const n of remaining){ if(normalize(n).startsWith(p)) return true; } return false; }
+
+/* مؤثرات */
 let actx=null;
 function ensureAudio(){ if(!actx){ actx=new (window.AudioContext||window.webkitAudioContext)(); } }
-function tone(freq, dur=0.12, type='sine', gain=0.09, when=0){
+function tone(freq, dur=0.12, type='sine', gain=0.08, when=0){
   ensureAudio(); const t=actx.currentTime+when;
   const osc=actx.createOscillator(), g=actx.createGain();
   osc.type=type; osc.frequency.value=freq;
   g.gain.value=gain; g.gain.setValueAtTime(gain,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
   osc.connect(g).connect(actx.destination); osc.start(t); osc.stop(t+dur);
 }
-function sRight(){ tone(880,0.10,'triangle',0.11,0); tone(1320,0.12,'triangle',0.09,0.07); }
-function sWrong(){ tone(220,0.12,'sawtooth',0.10,0); }
-function sWin(){ [660,880,990,1320].forEach((f,i)=>tone(f,0.16,'square',0.10,i*0.08)); confetti(); }
-
-/* 🎉 مؤثر بصري */
-function confetti(){
+function playDing(){ tone(880,0.10,'triangle',0.10,0); tone(1320,0.12,'triangle',0.08,0.07); }
+function playWin(){ [660,880,990,1320].forEach((f,i)=>tone(f,0.15,'square',0.09,i*0.08)); confettiBurst(); }
+function confettiBurst(){
   const c=document.createElement('canvas'); c.width=innerWidth; c.height=innerHeight;
   Object.assign(c.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:9999});
   document.body.appendChild(c);
@@ -273,111 +303,82 @@ function confetti(){
   })();
 }
 
-/* أدوات */
-function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const r=Math.floor(Math.random()*(i+1)); [arr[i],arr[r]]=[arr[r],arr[i]]; } return arr; }
-function pickDistractors(correctIdx, k=3){
-  const pool = order.filter(x=>x!==correctIdx);
-  shuffle(pool);
-  return pool.slice(0,k);
-}
+/* سحب/إسقاط */
+let start=null, lastPreview=[];
+function posFromEl(el){ const i=+el.dataset.index; return {r:Math.floor(i/N), c:i%N}; }
+function clearPreview(){ lastPreview.forEach(p=>cells[idx(p.r,p.c)].classList.remove('preview','valid-preview')); lastPreview=[]; }
+function setPreview(L, exact=false){ clearPreview(); if(!L) return; L.forEach(p=>cells[idx(p.r,p.c)].classList.add(exact?'valid-preview':'preview')); lastPreview=L.slice(); }
 
-/* واجهة */
-function drawHearts(){
-  heartsEl.innerHTML='';
-  for(let i=0;i<3;i++){
-    const span=document.createElement('span');
-    span.className='heart' + (i<lives?' alive':'');
-    span.textContent='❤';
-    heartsEl.appendChild(span);
+gridEl.addEventListener('pointerdown', e=>{
+  const t=e.target.closest('.cell'); if(!t) return;
+  ensureAudio(); e.preventDefault(); gridEl.setPointerCapture(e.pointerId);
+  start=posFromEl(t); setPreview([start], false);
+});
+gridEl.addEventListener('pointermove', e=>{
+  if(!start) return;
+  const el=document.elementFromPoint(e.clientX, e.clientY);
+  const cell=(el && el.classList && el.classList.contains('cell'))? el : e.target.closest('.cell');
+  if(!cell) return;
+  const end=posFromEl(cell);
+  const L=collectLine(start,end);
+  if(!L){ clearPreview(); return; }
+  const exact=isExact(L);
+  if(exact){ setPreview(L, true); }
+  else if(isPrefix(L)){ setPreview(L, false); }
+  else{ clearPreview(); }
+});
+function commitIfValid(){
+  if(!start || !lastPreview.length) return;
+  const exactName=isExact(lastPreview);
+  if(exactName){
+    remaining.delete(exactName);
+    lastPreview.forEach(p=>gridEl.children[idx(p.r,p.c)].classList.add('found','flash'));
+    markBadgeFound(exactName); updateStatus(); playDing();
+    if(remaining.size===0){ statusEl.textContent="أحسنت! ✅"; playWin(); }
+    applyHints();
+  }
+  clearPreview(); start=null;
+}
+gridEl.addEventListener('pointerup',    ()=>commitIfValid());
+gridEl.addEventListener('pointercancel',()=>{ clearPreview(); start=null; });
+
+/* تلميحات */
+function applyHints(){
+  for(let r=0;r<N;r++){
+    for(let c=0;c<N;c++){
+      const i=idx(r,c); const el=cells[i]; const isFound=el.classList.contains('found');
+      el.classList.toggle('hint', hintsOn && isWord[r][c] && !isFound);
+    }
   }
 }
+btnHints.onclick=()=>{ hintsOn=!hintsOn; btnHints.setAttribute('aria-pressed', hintsOn?'true':'false'); applyHints(); };
 
-function updateProgress(){
-  nIdx.textContent = String(idx+1);
-  nTotal.textContent = String(Q_TOTAL);
-  score1.textContent = score;
-  score2.textContent = score;
-  bar.style.width = ((idx)/Q_TOTAL*100).toFixed(1)+'%';
+/* أزرار */
+btnRegen.onclick=()=>generate(+levelSel.value);
+sizeSel.onchange=()=>{ N=+sizeSel.value; gridEl.style.setProperty('--n',N); generate(+levelSel.value); };
+chunkSel.onchange=()=>{ CHUNK=+chunkSel.value; rebuildLevels(); generate(+levelSel.value); };
+levelSel.onchange=()=>generate(+levelSel.value);
+
+/* ملاءمة */
+function sizeGridWrap(){
+  const header=document.querySelector('header');
+  const wrap=gridEl.parentElement;
+  const H=Math.max(280, window.innerHeight - header.getBoundingClientRect().height - 32);
+  wrap.style.setProperty('--gridH', H+'px');
 }
-
-/* سؤال جديد */
-function buildQuestion(){
-  qResult.textContent='';
-  const qIdx = quizOrder[idx];
-  const item = DATA[qIdx];
-  qName.textContent = item.n;
-
-  // توليد الخيارات
-  const opts = [qIdx, ...pickDistractors(qIdx,3)];
-  shuffle(opts);
-
-  optionsEl.innerHTML='';
-  opts.forEach(id=>{
-    const btn=document.createElement('button');
-    btn.className='option';
-    btn.textContent = DATA[id].m;
-    btn.onclick = ()=>{
-      // تعطيل بقية الأزرار
-      [...document.querySelectorAll('.option')].forEach(b=>b.disabled=true);
-      if(id===qIdx){
-        btn.classList.add('correct'); qResult.textContent='أحسنت! ✅'; score+=10; sRight();
-      }else{
-        btn.classList.add('wrong'); qResult.textContent=`الإجابة الصحيحة تخص: «${item.n}».`; lives=Math.max(0,lives-1); sWrong();
-        wrongLog.push({name:item.n, correct:item.m, chosen:DATA[id].m});
-      }
-      drawHearts();
-      setTimeout(nextStep, 800);
-    };
-    optionsEl.appendChild(btn);
-  });
-
-  updateProgress();
+function fitGrid(){
+  const wrap=gridEl.parentElement, styles=getComputedStyle(gridEl);
+  const gap=parseFloat(styles.gap)||0, W=wrap.clientWidth-4, H=wrap.clientHeight-4;
+  const cW=(W-gap*(N-1))/N, cH=(H-gap*(N-1))/N;
+  document.documentElement.style.setProperty('--cell', Math.floor(Math.max(22, Math.min(cW, cH)))+'px');
 }
+function refitAll(){ sizeGridWrap(); fitGrid(); }
+window.addEventListener('resize', refitAll);
+new ResizeObserver(refitAll).observe(document.body);
 
-/* انتقال للسؤال التالي أو إنهاء */
-function nextStep(){
-  idx++;
-  if(lives===0){ return end(false); }
-  if(idx>=Q_TOTAL){ return end(true); }
-  buildQuestion();
-}
-
-/* نهاية الجولة */
-function end(win){
-  panelQuiz.classList.add('hide');
-  panelEnd.classList.remove('hide');
-  if(win){ endTitle.textContent='رائع! 🎉'; sWin(); }
-  else   { endTitle.textContent='انتهت المحاولات ❗'; }
-  endMsg.textContent = `نتيجتك: ${score} / ${Q_TOTAL*10}` + (wrongLog.length? ` — أخطاء: ${wrongLog.length}`:'');
-}
-
-/* بدء جولة */
-function startGame(shuffleSet=true){
-  score=0; lives=3; idx=0; wrongLog=[];
-  drawHearts();
-  if(shuffleSet) shuffle(order);
-  quizOrder = order.slice(0,Q_TOTAL);
-  panelEnd.classList.add('hide');
-  panelQuiz.classList.remove('hide');
-  updateProgress();
-  buildQuestion();
-}
-
-/* أزرار أعلى */
-document.getElementById('btnRestart').onclick = ()=>startGame(true);
-document.getElementById('btnShuffle').onclick = ()=>{ shuffle(order); startGame(false); };
-document.getElementById('playAgain').onclick = ()=>startGame(true);
-document.getElementById('reviewWrong').onclick = ()=>{
-  if(!wrongLog.length){ alert('لا أخطاء في هذه الجولة 👌'); return; }
-  const msg = wrongLog.map((w,i)=>`${i+1}) «${w.name}»\n✔ ${w.correct}\n✖ ${w.chosen}`).join('\n\n');
-  alert(msg);
-};
-document.getElementById('btnSpeak').onclick = ()=>{
-  const u=new SpeechSynthesisUtterance(qName.textContent); u.lang='ar-SA'; u.rate=0.95; speechSynthesis.cancel(); speechSynthesis.speak(u);
-};
-
-/* تشغيل أولي */
-startGame(true);
+/* تشغيل */
+generate(0);
+refitAll();
 </script>
 </body>
 </html>
