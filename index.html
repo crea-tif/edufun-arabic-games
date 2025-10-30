@@ -1,55 +1,259 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EDUFUN — Jeux éducatifs arabes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EDUFUN — Jeux éducatifs en arabe</title>
+  <meta name="theme-color" content="#0ea5e9" />
+
+  <!-- Polices -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+
+  <!-- Confettis -->
+  <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Favicon / logo -->
+  <link rel="icon" href="assets/edufun-logo.png" />
+
   <style>
-    body {
-      font-family: "Segoe UI", Tahoma, sans-serif;
-      background: linear-gradient(135deg, #f0f4f8, #c0d3e8);
-      margin: 0;
-      padding: 0;
-      text-align: center;
+    :root{
+      --bg1:#e0f2fe; /* bleu très clair */
+      --bg2:#f0fdfa; /* menthe très clair */
+      --ink:#0f172a; /* slate-900 */
+      --brand:#0ea5e9; /* sky-500 */
+      --brand-deep:#0284c7; /* sky-600 */
+      --accent:#fbbf24; /* amber-400 */
+      --accent-deep:#f59e0b; /* amber-500 */
+      --card:#ffffff;
+      --muted:#475569;
+      --ring:rgba(14,165,233,.35);
+      --shadow: 0 8px 32px rgba(2,132,199,.15);
+      --radius: 18px;
     }
-    h1 {
-      margin-top: 60px;
-      color: #003366;
-      font-size: 2.5em;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Poppins, Tajawal, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -20%, var(--bg2), transparent 60%),
+        radial-gradient(1000px 500px at 110% 10%, var(--bg1), transparent 55%),
+        linear-gradient(180deg, #ffffff, #f8fafc);
     }
-    .container {
-      margin: 50px auto;
-      max-width: 600px;
+
+    /* Header */
+    .header{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px; padding:18px 22px; position:sticky; top:0; z-index:10;
+      background:rgba(255,255,255,.7); backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(2,132,199,.08);
     }
-    a.button {
-      display: block;
-      background: #0078d7;
-      color: white;
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 10px;
-      text-decoration: none;
-      font-size: 1.3em;
-      font-weight: bold;
-      transition: background 0.3s;
+    .brand{
+      display:flex; align-items:center; gap:14px; text-decoration:none; color:inherit;
     }
-    a.button:hover {
-      background: #005a9e;
+    .brand img{width:44px; height:44px; border-radius:12px; box-shadow:0 6px 18px rgba(2,132,199,.2)}
+    .brand .title{font-weight:800; letter-spacing:.5px}
+    .brand .subtitle{font-size:12px; color:var(--muted); margin-top:2px}
+
+    .actions{display:flex; gap:10px}
+    .btn{
+      appearance:none; border:none; cursor:pointer; border-radius:12px;
+      padding:10px 14px; font-weight:600; transition: transform .06s ease, box-shadow .2s ease, background .2s ease;
+      outline: 3px solid transparent;
     }
-    footer {
-      margin-top: 60px;
-      color: #333;
-      font-size: 0.9em;
+    .btn:hover{transform: translateY(-1px)}
+    .btn:active{transform: translateY(0)}
+    .btn-primary{background:var(--brand); color:#fff; box-shadow:0 6px 18px rgba(14,165,233,.25)}
+    .btn-primary:hover{background:var(--brand-deep)}
+    .btn-ghost{background:#fff; color:var(--brand-deep); border:1px solid rgba(2,132,199,.2)}
+    .btn-ghost:hover{background:#f0f9ff}
+
+    /* Hero */
+    .hero{
+      text-align:center; padding:48px 22px 16px;
     }
+    .hero h1{font-size:clamp(26px, 3.6vw, 44px); margin:8px 0 6px; font-weight:800; letter-spacing:.3px}
+    .hero p{color:var(--muted); margin:6px 0 0}
+
+    /* Grid */
+    .grid{
+      max-width:1100px; margin:26px auto 64px; padding:0 22px;
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px;
+    }
+    .card{
+      background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+      border:1px solid rgba(2,132,199,.08); overflow:hidden; display:flex; flex-direction:column;
+    }
+    .card .cover{
+      height:120px; background:
+      linear-gradient(135deg, rgba(14,165,233,.15), rgba(245,158,11,.18)),
+      repeating-linear-gradient( 45deg, rgba(2,132,199,.06) 0 6px, rgba(2,132,199,.02) 6px 12px);
+    }
+    .card .body{padding:18px}
+    .card h3{margin:0 0 8px; font-size:20px}
+    .card p{margin:0 0 14px; color:var(--muted); min-height:48px}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      background: #fff8eb; color:#a16207; padding:6px 10px; border-radius:999px; font-weight:600;
+      border:1px solid rgba(245,158,11,.35)
+    }
+    .cta{margin-top:auto; padding:16px 18px; display:flex; justify-content:space-between; align-items:center; gap:12px; border-top:1px solid rgba(2,132,199,.08)}
+    .cta .btn-play{
+      text-decoration:none; display:inline-flex; align-items:center; gap:10px;
+      padding:11px 14px; border-radius:12px; background:var(--accent); color:#1f2937; font-weight:800;
+      box-shadow:0 6px 18px rgba(245,158,11,.25);
+      transition: background .2s ease;
+    }
+    .cta .btn-play:hover{background:var(--accent-deep); color:#111827}
+    .rtl-note{font-family: Tajawal, Poppins, sans-serif; direction: rtl;}
+
+    /* Footer */
+    footer{ text-align:center; color:var(--muted); padding:26px 14px 40px }
+
+    /* tiny helpers */
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0 }
   </style>
 </head>
 <body>
-  <h1>🎮 EDUFUN — Jeux éducatifs en arabe</h1>
-  <div class="container">
-    <a href="asmaa-allah-quiz/" class="button">🕌 Quiz : Les Noms d’Allah</a>
-    <a href="kalimat-khafiya-asmaa/" class="button">🔤 Mots cachés : Noms d’Allah</a>
-    <a href="kids-hidden-words/" class="button">🧩 Mots cachés pour enfants</a>
-  </div>
-  <footer>© 2025 EDUFUN — Créé avec ❤️ pour l’apprentissage en arabe</footer>
+  <!-- Audios -->
+  <audio id="sfxClick" preload="auto" src="assets/click.mp3"></audio>
+  <audio id="sfxWin" preload="auto" src="assets/victory.mp3"></audio>
+
+  <header class="header">
+    <a class="brand" href="./" aria-label="Accueil EDUFUN">
+      <img src="assets/edufun-logo.png" alt="EDUFUN logo">
+      <div>
+        <div class="title">EDUFUN</div>
+        <div class="subtitle">Jeux éducatifs en arabe</div>
+      </div>
+    </a>
+    <div class="actions">
+      <button class="btn btn-ghost" id="test-sound">Tester le son</button>
+      <button class="btn btn-primary" id="test-win">🎉 Fêter une victoire</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Apprendre en s’amusant — بالعربية</h1>
+    <p>Choisis un jeu ci-dessous. Les interfaces s’adaptent à l’arabe (RTL) et au mobile.</p>
+  </section>
+
+  <main class="grid">
+    <!-- Jeu 1 -->
+    <article class="card">
+      <div class="cover" aria-hidden="true"></div>
+      <div class="body">
+        <span class="pill">🕌 Noms d’Allah</span>
+        <h3 class="rtl-note">الكلمات الخفية — أسماء الله الحسنى</h3>
+        <p>Retrouve les noms dans la grille. Plusieurs niveaux de difficulté.</p>
+      </div>
+      <div class="cta">
+        <span class="rtl-note">ابدأ اللعب الآن</span>
+        <a class="btn-play game-link" href="asmaa-allah-quiz/">
+          ▶️ Jouer
+        </a>
+      </div>
+    </article>
+
+    <!-- Jeu 2 -->
+    <article class="card">
+      <div class="cover" aria-hidden="true"></div>
+      <div class="body">
+        <span class="pill">🔤 Mots cachés</span>
+        <h3 class="rtl-note">الكلمات الخفية — أسماء الله</h3>
+        <p>Cherche horizontalement et verticalement des mots précis liés aux Noms.</p>
+      </div>
+      <div class="cta">
+        <span class="rtl-note">التحدي التالي</span>
+        <a class="btn-play game-link" href="kalimat-khafiya-asmaa/">
+          ▶️ Jouer
+        </a>
+      </div>
+    </article>
+
+    <!-- Jeu 3 -->
+    <article class="card">
+      <div class="cover" aria-hidden="true"></div>
+      <div class="body">
+        <span class="pill">🧩 Kids</span>
+        <h3 class="rtl-note">كلمات خفية للأطفال</h3>
+        <p>Thèmes simples (animaux, couleurs, fruits…) avec niveaux progressifs.</p>
+      </div>
+      <div class="cta">
+        <span class="rtl-note">للأطفال</span>
+        <a class="btn-play game-link" href="kids-hidden-words/">
+          ▶️ Jouer
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    © <span id="yyyy"></span> EDUFUN — Conçu pour l’apprentissage en arabe. Tous droits réservés.
+  </footer>
+
+  <script>
+    // Année dynamique
+    document.getElementById('yyyy').textContent = new Date().getFullYear();
+
+    // Prépare les sons
+    const sfxClick = document.getElementById('sfxClick');
+    const sfxWin = document.getElementById('sfxWin');
+
+    function playSafe(audioEl){
+      if(!audioEl) return;
+      const p = audioEl.cloneNode(); // évite les blocages si déjà en lecture
+      p.volume = 0.9;
+      p.play().catch(()=>{ /* ignore autoplay restrictions */});
+    }
+
+    // Confettis (canvas-confetti)
+    function fireConfetti(){
+      const duration = 1600;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    }
+
+    // Boutons de test
+    document.getElementById('test-sound').addEventListener('click', () => playSafe(sfxClick));
+    document.getElementById('test-win').addEventListener('click', () => { playSafe(sfxWin); fireConfetti(); });
+
+    // Son + mini-confettis sur clic "Jouer"
+    document.querySelectorAll('.game-link').forEach(a=>{
+      a.addEventListener('click', ()=> {
+        playSafe(sfxClick);
+        confetti({ particleCount: 40, spread: 60, origin: { y: 0.9 } });
+      });
+    });
+
+    // Si on revient avec ?win=1 depuis un jeu → célébration automatique
+    const params = new URLSearchParams(location.search);
+    if(params.get('win') === '1'){
+      playSafe(sfxWin);
+      fireConfetti();
+      // Nettoie l'URL après 2s
+      setTimeout(()=>{
+        const url = new URL(location.href);
+        url.searchParams.delete('win');
+        history.replaceState({}, '', url.toString());
+      }, 2000);
+    }
+  </script>
 </body>
 </html>
