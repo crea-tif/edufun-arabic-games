@@ -2,8 +2,26 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<script>
+/* Force l’ouverture sur GitHub Pages (évite le viewer GitHub qui casse CSS/JS) */
+(function () {
+  var pages = "https://crea-tif.github.io/edufun-arabic-games/";
+  var appPath = location.pathname.split("/").slice(-2)[0];
+  var host = location.hostname;
+  var isBadHost = host === "github.com" ||
+                  host === "raw.githubusercontent.com" ||
+                  host.endsWith("githubusercontent.com");
+  if (isBadHost) {
+    var q = location.search || "";
+    var h = location.hash || "";
+    location.replace(pages + appPath + "/" + q + h);
+  }
+})();
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>الكلمات الخفية — كلمات حول الأسماء الحسنى</title>
+<title>الكلمات الخفية • أسماء الله الحسنى</title>
+<!-- le reste de ton fichier inchangé -->
+
 <style>
 :root{
   /* Palette “Kids” (vert clair/contrasté) */
