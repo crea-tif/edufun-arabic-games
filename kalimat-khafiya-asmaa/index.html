@@ -6,18 +6,18 @@
 <title>الكلمات الخفية — كلمات حول الأسماء الحسنى</title>
 <style>
 :root{
-  /* Palette proche de la version “Kids” (vert clair/contrasté) */
+  /* Palette proche “Kids” (vert clair/contrasté) */
   --ink:#0f172a; --accent:#1f7ae0;
   --ok:#16a34a; --warn:#f59e0b;
   --glass: rgba(255,255,255,0.85);
   --bg1:#b9f3d0; --bg2:#31c77a;
-  --cell:44px;                 /* recalculée en JS */
+  --cell:44px; /* recalculée en JS */
 }
 
 /* ===== Fond dégradé + watermark logo ===== */
 html,body{height:100%}
 body{
-  margin:0;color:var(--ink);
+  margin:0; color:var(--ink);
   font-family:system-ui,-apple-system,"Noto Kufi Arabic","Tajawal","Cairo",Tahoma,Arial;
   background:linear-gradient(35deg,var(--bg1) 0%, var(--bg2) 100%) fixed;
 }
@@ -58,9 +58,16 @@ button.primary{ background:#10b981; border-color:#10b981; color:#fff; box-shadow
 
 /* Layout */
 main .wrap{ display:grid; grid-template-columns:1fr 320px; gap:16px; }
-.grid-wrap{ overflow:hidden; height:var(--gridH,70vh); } /* Hauteur pilotée JS (mobile fix) */
 
-/* ✅ Mobile : header non-collant pour éviter le “rognage” de la grille */
+/* Hauteur pilotée JS (fix mobile) */
+.grid-wrap{ overflow:hidden; height:var(--gridH,70vh); }
+
+/* Bonus : pour navigateurs modernes, exploite 100dvh */
+@supports (height: 100dvh){
+  .grid-wrap{ height: calc(100dvh - var(--headH,240px)); }
+}
+
+/* ✅ Mobile : header non-collant pour éviter le rognage de la grille */
 @media (max-width:900px){
   header{ position:static; }
   main .wrap{ grid-template-columns:1fr; }
@@ -157,13 +164,13 @@ hr{ border:none; border-top:1px solid #e7f0ff; margin:10px 0; }
 </main>
 
 <script>
-/* ========= بيانات الكلمات (أمثلة لطيفة) ========= */
+/* ========= بيانات الكلمات ========= */
 const VOCAB = [
   "رحمة","مغفرة","هداية","حكمة","علم","قوة","رزق","نور",
   "صدق","رفق","أمانة","إحسان","وفاء","صبر","بر","عدل"
 ];
 
-/* ========= عناصر DOM ========= */
+/* ========= DOM ========= */
 const gridEl=document.getElementById('grid'),
 levelSel=document.getElementById('level'),
 sizeSel=document.getElementById('size'),
@@ -173,20 +180,20 @@ statusEl=document.getElementById('status'),
 btnRegen=document.getElementById('regen'),
 btnHints=document.getElementById('showHints');
 
-/* ========= حالة عامة ========= */
+/* ========= State ========= */
 let N=+sizeSel.value, CHUNK=+chunkSel.value;
 let LEVELS=[], cells=[], board=[], isWord=[], targetWords=[], remaining=new Set();
 let hintsOn=false;
 
-/* ========= أدوات ========= */
+/* ========= Utils ========= */
 const AR_RANDOM="ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
 const randLetter=()=>AR_RANDOM[Math.floor(Math.random()*AR_RANDOM.length)];
 const normalize=s=>s.replace(/\s+/g,'').replace(/ـ/g,'').replace(/[^\u0600-\u06FF]/g,'');
 const idx=(r,c)=>r*N+c, inBounds=(r,c)=>r>=0&&r<N&&c>=0&&c<N;
 
-/* ========= تقسيم المستويات ========= */
+/* ========= Levels ========= */
 function rebuildLevels(){
-  LEVELS=[]; // قصّ إلى مجموعات من CHUNK عناصر
+  LEVELS=[];
   for(let i=0;i<VOCAB.length;i+=CHUNK) LEVELS.push(VOCAB.slice(i,i+CHUNK));
   levelSel.innerHTML='';
   LEVELS.forEach((L,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=`المستوى ${i+1} (${L.length} كلمة)`; levelSel.appendChild(o); });
@@ -194,9 +201,10 @@ function rebuildLevels(){
 }
 rebuildLevels();
 
-/* ========= بناء الشبكة ========= */
+/* ========= Grid build ========= */
 function buildGrid(){
   gridEl.innerHTML=''; cells=[];
+  gridEl.style.setProperty('--n', N);
   for(let i=0;i<N*N;i++){
     const d=document.createElement('div');
     d.className='cell'; d.dataset.index=i;
@@ -204,11 +212,11 @@ function buildGrid(){
   }
 }
 
-/* ========= وضع الكلمات: يمين←يسار أو أعلى↓أسفل ========= */
+/* ========= Placement (← ou ↓) ========= */
 function tryPlace(word){
   const chars=normalize(word).split(''), L=chars.length;
   if(L>N) return false;
-  const dirs=[{dr:0,dc:-1},{dr:1,dc:0}]; // ← أو ↓
+  const dirs=[{dr:0,dc:-1},{dr:1,dc:0}];
   for(let t=0;t<420;t++){
     const dir=dirs[Math.random()<.6?0:1];
     let r,c;
@@ -227,7 +235,7 @@ function tryPlace(word){
 }
 function pickSubset(a,k){ const x=a.slice(); for(let i=x.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [x[i],x[j]]=[x[j],x[i]]; } return x.slice(0,Math.min(k,x.length)); }
 
-/* ========= توليد مستوى ========= */
+/* ========= Generate ========= */
 function generate(i){
   const base=LEVELS[i].slice(), eligible=base.filter(n=>normalize(n).length<=N);
   let words=pickSubset(eligible, Math.min(CHUNK, eligible.length));
@@ -254,7 +262,7 @@ function generate(i){
   renderTargets(); updateStatus(); refitAll(); applyHints();
 }
 
-/* ========= واجهة الأهداف ========= */
+/* ========= UI (badges) ========= */
 function renderTargets(){
   document.getElementById('listTitle').textContent=`الكلمات المستهدفة — (${targetWords.length} كلمة)`;
   targetsEl.innerHTML='';
@@ -263,7 +271,7 @@ function renderTargets(){
 function markBadgeFound(n){ [...targetsEl.children].forEach(x=>{ if(x.dataset.name===n) x.classList.add('found'); }); }
 function updateStatus(){ statusEl.textContent=`المتبقي: ${remaining.size} / ${targetWords.length}`; }
 
-/* ========= مطابقة / معاينة ========= */
+/* ========= Matching / Preview ========= */
 function collectLine(f,t){
   if(f.r===t.r && t.c<=f.c){ const L=[]; for(let c=f.c;c>=t.c;c--) L.push({r:f.r,c}); return L; }
   if(f.c===t.c && t.r>=f.r){ const L=[]; for(let r=f.r;r<=t.r;r++) L.push({r,c:f.c}); return L; }
@@ -314,7 +322,8 @@ gridEl.addEventListener('pointerdown', e=>{
   gridEl.setPointerCapture(e.pointerId);
   start=posFromEl(t);
   setPreview([start], false);
-});
+}, {passive:false});
+
 gridEl.addEventListener('pointermove', e=>{
   if(!start) return;
   const el=document.elementFromPoint(e.clientX, e.clientY);
@@ -327,9 +336,10 @@ gridEl.addEventListener('pointermove', e=>{
   if(exact){ setPreview(L, true); }
   else if(isPrefix(L)){ setPreview(L, false); }
   else{ clearPreview(); }
-});
-function commitIfValid(){
-  if(!start || !lastPreview.length) return;
+}, {passive:false});
+
+function commitIfValid(e){
+  if(!start || !lastPreview.length) { start=null; return; }
   const exactName=isExact(lastPreview);
   if(exactName){
     remaining.delete(exactName);
@@ -339,9 +349,10 @@ function commitIfValid(){
     applyHints();
   }
   clearPreview(); start=null;
+  if(e && e.pointerId) { try{ gridEl.releasePointerCapture(e.pointerId); }catch{} }
 }
-gridEl.addEventListener('pointerup', commitIfValid);
-gridEl.addEventListener('pointercancel', ()=>{ clearPreview(); start=null; });
+gridEl.addEventListener('pointerup',    commitIfValid, {passive:true});
+gridEl.addEventListener('pointercancel',()=>{ clearPreview(); start=null; });
 
 /* ========= TIPS ========= */
 function applyHints(){
@@ -356,12 +367,11 @@ btnHints.onclick=()=>{ hintsOn=!hintsOn; btnHints.setAttribute('aria-pressed', h
 
 /* ========= Recalc responsive (FIX mobile) ========= */
 function sizeGridWrap(){
-  // Utilise la hauteur réelle de la fenêtre (corrige le bug des barres d’adresse mobiles)
   const vh = window.visualViewport ? window.visualViewport.height
            : Math.min(window.innerHeight, document.documentElement.clientHeight);
   const header=document.querySelector('header');
   const headerH= header ? header.getBoundingClientRect().height : 0;
-  // marge + respirations
+  document.documentElement.style.setProperty('--headH', headerH + 'px');
   const H = Math.max(280, vh - headerH - 28);
   gridEl.parentElement.style.setProperty('--gridH', H+'px');
 }
@@ -375,9 +385,9 @@ function refitAll(){ sizeGridWrap(); fitGrid(); }
 addEventListener('resize', refitAll);
 new ResizeObserver(()=>refitAll()).observe(document.body);
 
-/* ========= Événements UI ========= */
+/* ========= UI Events ========= */
 btnRegen.onclick=()=>generate(+levelSel.value);
-sizeSel.onchange=()=>{ N=+sizeSel.value; gridEl.style.setProperty('--n',N); generate(+levelSel.value); };
+sizeSel.onchange=()=>{ N=+sizeSel.value; generate(+levelSel.value); };
 chunkSel.onchange=()=>{ CHUNK=+chunkSel.value; rebuildLevels(); generate(+levelSel.value); };
 levelSel.onchange=()=>generate(+levelSel.value);
 
