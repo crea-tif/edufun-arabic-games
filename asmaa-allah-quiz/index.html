@@ -3,81 +3,114 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>الكلمات الخفية • أسماء الله الحسنى</title>
+<title>الكلمات الخفية — أسماء الله الحسنى</title>
 <style>
 :root{
   --ink:#0f172a; --accent:#1f7ae0; --ok:#16a34a; --warn:#f59e0b;
-  --glass: rgba(255,255,255,0.85);
-  --cell: 44px; /* يُضبط تلقائيًا بالسكربت */
+  --bg1:#e8fff4; --bg2:#a7efc5;             /* dégradé doux/contrasté */
+  --glass: rgba(255,255,255,0.9);
+  --cell: 44px; /* auto-ajusté */
 }
+
+/* ===== fond ===== */
 html,body{height:100%}
 body{
   margin:0; color:var(--ink);
   font-family:system-ui,-apple-system,"Noto Kufi Arabic","Cairo",Tahoma,Arial;
-  background: linear-gradient(35deg,#55c6ff 0%, #1f7ae0 100%) fixed;
+  background: radial-gradient(1200px 700px at 70% -80%, var(--bg2), transparent 70%),
+              radial-gradient(1000px 600px at -20% 50%, var(--bg2), transparent 60%),
+              linear-gradient(35deg,#bdf7cf 0%, #73e2a7 40%, #28c76f 100%) fixed;
 }
-body::before{
-  content:""; position:fixed; inset:0; z-index:-2;
-  background:url('../edufun-logo-512.png') center/200px no-repeat;
-  opacity:.06;
+
+/* bulles décor */
+body::after{
+  content:""; position:fixed; inset:auto 16px 16px auto; width:72px; height:72px; z-index:0;
+  background:url("../edufun-logo-512.png") center/contain no-repeat;
+  opacity:.14; filter:drop-shadow(0 1px 1px rgba(0,0,0,.15));
+  pointer-events:none;
 }
-header, .card{
-  background: var(--glass);
-  backdrop-filter: blur(10px);
+
+/* cartes vitrées */
+header,.card{
+  position:relative; z-index:1;
+  background:var(--glass); backdrop-filter:blur(10px);
   border:1px solid rgba(255,255,255,0.65);
-  border-radius:18px;
-  box-shadow:0 10px 30px rgba(31,122,224,.18);
+  border-radius:18px; box-shadow:0 10px 30px rgba(31,122,224,.18);
 }
-header{position:sticky;top:0;z-index:10;margin-bottom:12px;}
-.wrap{max-width:1000px;margin:auto;padding:12px}
-.brandbar{display:flex;align-items:center;gap:12px}
-.brand{height:56px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.16))}
-@media (max-width:520px){.brand{height:48px}}
+header{position:sticky;top:0;margin:10px 0 12px;z-index:5}
+.wrap{max-width:1100px;margin:auto;padding:12px}
+
+/* barre marque + actions */
+.brandbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{height:56px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.12))}
 h1{font-size:22px;margin:0}
+.sub{font-size:13px;color:#246b4b}
+
 .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
-select,button{padding:10px 12px;border:1px solid rgba(255,255,255,0.65);background:rgba(255,255,255,0.96);border-radius:12px;font-size:14px}
-button.primary{background:#1f7ae0;border-color:#1f7ae0;color:#fff;box-shadow:0 6px 16px rgba(31,122,224,.25)}
+select,button,.home{
+  padding:10px 12px;border:1px solid rgba(0,0,0,.06);background:#fff;border-radius:12px;font-size:14px
+}
+button.primary{background:#10b981;border-color:#10b981;color:#fff;box-shadow:0 6px 16px rgba(16,185,129,.25)}
+.home{
+  display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#065f46;background:#eafff2;border-color:#bbf7d0;
+}
+.home::before{content:"🏠"}
+
 main .wrap{display:grid;grid-template-columns:1fr 320px;gap:16px}
 .grid-wrap{overflow:hidden;height:var(--gridH,70vh);}
-@media (max-width:900px){ header{position:static;margin-bottom:12px} main .wrap{grid-template-columns:1fr} aside.card{margin-top:10px} }
+
+/* responsive */
+@media (max-width:900px){
+  header{position:static}
+  main .wrap{grid-template-columns:1fr}
+}
+
+/* ===== grille ===== */
 .grid{
   --n:10;
-  position:relative;
   display:grid;
   grid-template-columns:repeat(var(--n),var(--cell));
   grid-auto-rows:var(--cell);
-  gap:4px; user-select:none; touch-action:none; padding:6px;
+  gap:6px;
+  user-select:none; touch-action:none; padding:8px;
 }
 .cell{
   width:var(--cell);height:var(--cell);
-  border-radius:14px;background:#fff;border:1px solid #eaf1fb;
+  border-radius:16px;background:#fff;border:1px solid #eaf1fb;
   display:flex;align-items:center;justify-content:center;
   font-size:clamp(16px,calc(var(--cell)*.55),28px);
   font-weight:800;transition:transform .12s,background .3s,border-color .3s;
   box-shadow:0 2px 6px rgba(31,122,224,.08);
-  pointer-events:auto;
 }
-.cell.preview{ outline:2px dashed #1f7ae0; }
-.cell.valid-preview{ outline:2px solid var(--warn);}
-.cell.hint{ background:#fff3bf; border-color:#ffd04a; box-shadow:inset 0 0 0 2px #ffd04a33, 0 2px 6px rgba(31,122,224,.08); }
-.cell.found{background:#e8f7ee;border-color:#b7e3c8;color:#055a43}
-.cell.flash{animation:flashOk 1s ease-in-out 3}
+.cell.preview{ outline:2px dashed #10b981 }
+.cell.valid-preview{ outline:2px solid var(--warn) }
+.cell.hint{ background:#fff9db;border-color:#ffe08a }
+.cell.found{ background:#e8f7ee;border-color:#b7e3c8;color:#055a43 }
+.cell.flash{ animation:flashOk 1s ease-in-out 3 }
 @keyframes flashOk{0%,100%{background:#e8f7ee}50%{background:#16a34a;color:#fff;transform:scale(1.05)}}
+
+/* panel latéral */
 .target{display:flex;flex-wrap:wrap;gap:8px}
 .badge{background:#fff;border:1px solid #e5eefc;padding:8px 11px;border-radius:999px;font-size:14px;box-shadow:0 1px 3px rgba(31,122,224,.08)}
 .badge.found{background:#e8f7ee;border-color:#b7e3c8;color:#055a43}
-.help{font-size:13px;color:#29425f;line-height:1.7}
-.footer{font-size:12px;color:#eef6ff;margin-top:6px;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+.help{font-size:13px;color:#28555d;line-height:1.7}
+.footer{font-size:12px;color:#0e5135;margin-top:6px}
 hr{border:none;border-top:1px solid #e7f0ff;margin:10px 0}
 </style>
 </head>
 <body>
+
 <header>
   <div class="wrap">
     <div class="brandbar">
+      <a class="home" href="../">الصفحة الرئيسية</a>
       <img class="brand" src="../edufun-logo-512.png" alt="EDUFUN">
-      <h1>🧩 الكلمات الخفية — <span style="color:#1f7ae0">أسماء الله الحسنى</span></h1>
+      <div>
+        <h1>الكلمات الخفية — <span style="color:#0b8f60">أسماء الله الحسنى</span></h1>
+        <div class="sub">تعلم ممتع مع مؤثرات مرئية وصوتية</div>
+      </div>
     </div>
+
     <div class="controls">
       <label>المستوى: <select id="level"></select></label>
       <label>عدد الأسماء/المستوى: <select id="chunk">
@@ -114,10 +147,9 @@ hr{border:none;border-top:1px solid #e7f0ff;margin:10px 0}
 </main>
 
 <script>
-/* ——— قائمة الأسماء ——— */
+/* أسماء الله (99) */
 const ALL_NAMES=["الله","الرحمن","الرحيم","الملك","القدوس","السلام","المؤمن","المهيمن","العزيز","الجبار","المتكبر","الخالق","البارئ","المصور","الغفار","القهار","الوهاب","الرزاق","الفتاح","العليم","القابض","الباسط","الخافض","الرافع","المعز","المذل","السميع","البصير","الحكم","العدل","اللطيف","الخبير","الحليم","العظيم","الغفور","الشكور","العلي","الكبير","الحفيظ","المقيت","الحسيب","الجليل","الكريم","الرقيب","المجيب","الواسع","الحكيم","الودود","المجيد","الباعث","الشهيد","الحق","الوكيل","القوي","المتين","الولي","الحميد","المحصي","المبدئ","المعيد","المحيي","المميت","الحي","القيوم","الواجد","الماجد","الواحد","الصمد","القادر","المقتدر","المقدم","المؤخر","الأول","الآخر","الظاهر","الباطن","الوالي","المتعالي","البر","التواب","المنتقم","العفو","الرؤوف","مالك الملك","ذو الجلال والإكرام","المقسط","الجامع","الغني","المغني","المانع","الضار","النافع","النور","الهادي","البديع","الباقي","الوارث","الرشيد","الصبور"];
 
-/* DOM */
 const gridEl=document.getElementById('grid'),
 levelSel=document.getElementById('level'),
 sizeSel=document.getElementById('size'),
@@ -127,18 +159,16 @@ statusEl=document.getElementById('status'),
 btnRegen=document.getElementById('regen'),
 btnHints=document.getElementById('showHints');
 
-/* حالة عامة */
 let N=+sizeSel.value, CHUNK=+chunkSel.value;
 let LEVELS=[], cells=[], board=[], isWord=[], targetNames=[], remaining=new Set();
 let hintsOn=false;
 
-/* أدوات */
 const AR_RANDOM="ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
 const randLetter=()=>AR_RANDOM[Math.floor(Math.random()*AR_RANDOM.length)];
 const normalize=s=>s.replace(/\s+/g,'').replace(/ـ/g,'').replace(/[^\u0600-\u06FF]/g,'');
 const idx=(r,c)=>r*N+c, inBounds=(r,c)=>r>=0&&r<N&&c>=0&&c<N;
 
-/* تقسيم المستويات */
+/* niveaux */
 function rebuildLevels(){
   LEVELS=[];
   for(let i=0;i<ALL_NAMES.length;i+=CHUNK) LEVELS.push(ALL_NAMES.slice(i,i+CHUNK));
@@ -148,19 +178,19 @@ function rebuildLevels(){
 }
 rebuildLevels();
 
-/* بناء الشبكة */
+/* grid DOM */
 function buildGrid(){
   gridEl.innerHTML=''; cells=[];
   for(let i=0;i<N*N;i++){const d=document.createElement('div');d.className='cell';d.dataset.index=i;gridEl.appendChild(d);cells.push(d);}
 }
 
-/* وضع الكلمات: يمين←يسار أو أعلى↓أسفل */
+/* placement H/V فقط */
 function tryPlace(word){
   const chars=normalize(word).split(''), L=chars.length;
   if(L>N) return false;
   const dirs=[{dr:0,dc:-1},{dr:1,dc:0}];
   for(let t=0;t<420;t++){
-    const dir=Math.random()<.6?dirs[0]:dirs[1];
+    const dir=dirs[Math.random()<.6?0:1];
     let r,c;
     if(dir.dc===-1){ r=Math.floor(Math.random()*N); c=Math.floor(Math.random()*(N-1))+(L-1); }
     else{ r=Math.floor(Math.random()*(N-L)); c=Math.floor(Math.random()*N); }
@@ -178,24 +208,24 @@ function tryPlace(word){
   }
   return false;
 }
-function pickSubset(a,k){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}return x.slice(0,Math.min(k,x.length));}
+function pickSubset(a,k){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x.slice(0,Math.min(k,x.length))}
 
-/* توليد مستوى */
+/* génération */
 function generate(i){
   const base=LEVELS[i].slice(), eligible=base.filter(n=>normalize(n).length<=N);
   let names=pickSubset(eligible, Math.min(CHUNK, eligible.length));
   names.sort((a,b)=>normalize(b).length-normalize(a).length);
 
-  board  = Array.from({length:N},()=>Array(N).fill(null));
-  isWord = Array.from({length:N},()=>Array(N).fill(false));
+  board=Array.from({length:N},()=>Array(N).fill(null));
+  isWord=Array.from({length:N},()=>Array(N).fill(false));
 
   let placed=true;
   for(const nm of names){ if(!tryPlace(nm)){ placed=false; break; } }
   if(!placed){
     for(let attempt=0; attempt<3 && !placed; attempt++){
       names.pop();
-      board  = Array.from({length:N},()=>Array(N).fill(null));
-      isWord = Array.from({length:N},()=>Array(N).fill(false));
+      board=Array.from({length:N},()=>Array(N).fill(null));
+      isWord=Array.from({length:N},()=>Array(N).fill(false));
       placed=true;
       for(const nm of names){ if(!tryPlace(nm)){ placed=false; break; } }
     }
@@ -204,10 +234,10 @@ function generate(i){
 
   targetNames=names; remaining=new Set(names);
   buildGrid(); for(let r=0;r<N;r++)for(let c=0;c<N;c++) cells[idx(r,c)].textContent=board[r][c];
-  attachDragHandlers(); renderTargets(); updateStatus(); refitAll(); applyHints();
+  renderTargets(); updateStatus(); refitAll(); applyHints();
 }
 
-/* واجهة الأهداف */
+/* UI liste */
 function renderTargets(){
   document.getElementById('listTitle').textContent=`الأسماء المستهدفة — (${targetNames.length} اسم)`;
   targetsEl.innerHTML='';
@@ -216,35 +246,34 @@ function renderTargets(){
 function markBadgeFound(n){ [...targetsEl.children].forEach(x=>{ if(x.dataset.name===n) x.classList.add('found'); }); }
 function updateStatus(){ statusEl.textContent=`المتبقي: ${remaining.size} / ${targetNames.length}`; }
 
-/* مطابقة / معاينة */
+/* matching */
 function collectLine(f,t){
   if(f.r===t.r && t.c<=f.c){ const L=[]; for(let c=f.c;c>=t.c;c--) L.push({r:f.r,c}); return L; }
   if(f.c===t.c && t.r>=f.r){ const L=[]; for(let r=f.r;r<=t.r;r++) L.push({r,c:f.c}); return L; }
   return null;
 }
-function textFrom(L){ let s=''; for(const p of L) s+=board[p.r][p.c]; return s; }
-function isExact(L){ const p=textFrom(L); for(const n of remaining) if(normalize(n)===p) return n; return null; }
-function isPrefix(L){ const p=textFrom(L); for(const n of remaining){ if(normalize(n).startsWith(p)) return true; } return false; }
+const textFrom = L => L.map(p=>board[p.r][p.c]).join('');
+const isExact = L => { const p=textFrom(L); for(const n of remaining) if(normalize(n)===p) return n; return null; }
+const isPrefix = L => { const p=textFrom(L); for(const n of remaining) if(normalize(n).startsWith(p)) return true; return false; }
 
-/* مؤثرات صوتية + احتفال */
+/* audio + confettis (WebAudio/no mp3) */
 let actx=null;
-function ensureAudio(){ if(!actx){ actx=new (window.AudioContext||window.webkitAudioContext)(); } }
+const ensureAudio=()=>{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); }
 function tone(freq, dur=0.12, type='sine', gain=0.08, when=0){
-  try{
-    ensureAudio(); const t=actx.currentTime+when;
-    const osc=actx.createOscillator(), g=actx.createGain();
-    osc.type=type; osc.frequency.value=freq;
-    g.gain.value=gain; g.gain.setValueAtTime(gain,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    osc.connect(g).connect(actx.destination); osc.start(t); osc.stop(t+dur);
-  }catch(e){}
+  ensureAudio(); const t=actx.currentTime+when;
+  const osc=actx.createOscillator(), g=actx.createGain();
+  osc.type=type; osc.frequency.value=freq;
+  g.gain.value=gain; g.gain.setValueAtTime(gain,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  osc.connect(g).connect(actx.destination); osc.start(t); osc.stop(t+dur);
 }
-function playDing(){ tone(880,0.10,'triangle',0.10,0); tone(1320,0.12,'triangle',0.08,0.07); }
+const clickFx=()=>tone(520,0.06,'triangle',0.09,0);
+const playDing=()=>{ tone(880,0.10,'triangle',0.10,0); tone(1320,0.12,'triangle',0.08,0.07); }
 function playWin(){ [660,880,990,1320].forEach((f,i)=>tone(f,0.15,'square',0.09,i*0.08)); confettiBurst(); }
 function confettiBurst(){
   const c=document.createElement('canvas'); c.width=innerWidth; c.height=innerHeight;
   Object.assign(c.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:9999});
   document.body.appendChild(c);
-  const ctx=c.getContext('2d'), pcs=[], cols=['#ff6b6b','#ffd166','#06d6a0','#1f7ae0','#8338ec'];
+  const ctx=c.getContext('2d'), pcs=[], cols=['#ff6b6b','#ffd166','#06d6a0','#10b981','#1f7ae0','#9333ea'];
   for(let i=0;i<160;i++) pcs.push({x:Math.random()*c.width,y:-20-Math.random()*200,r:6+Math.random()*6,col:cols[(Math.random()*cols.length)|0],vx:-1+Math.random()*2,vy:2+Math.random()*2,rot:Math.random()*Math.PI,vr:(-0.1+Math.random()*0.2)});
   let t=0; (function a(){ ctx.clearRect(0,0,c.width,c.height);
     pcs.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.05; p.rot+=p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.col; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r); ctx.restore(); });
@@ -252,42 +281,37 @@ function confettiBurst(){
   })();
 }
 
-/* ==== سحب/إفلات — نسخة ثابتة (بدون pointer capture) ==== */
-let dragStart=null, lastPreview=[];
-function posFromIndex(i){ return {r:Math.floor(i/N), c:i%N}; }
-function clearPreview(){ lastPreview.forEach(p=>cells[idx(p.r,p.c)].classList.remove('preview','valid-preview')); lastPreview=[]; }
+/* interaction fiable (évite les blocages) */
+let start=null, lastPreview=[];
+const posFromEl = el => { const i=+el.dataset.index; return {r:Math.floor(i/N), c:i%N}; }
+const clearPreview = ()=>{ lastPreview.forEach(p=>cells[idx(p.r,p.c)].classList.remove('preview','valid-preview')); lastPreview=[]; }
 function setPreview(L, exact=false){
   clearPreview(); if(!L) return;
   L.forEach(p=>cells[idx(p.r,p.c)].classList.add(exact?'valid-preview':'preview'));
   lastPreview=L.slice();
 }
-function attachDragHandlers(){
-  // enlever handlers existants
-  cells.forEach(cell=>{
-    cell.onpointerdown=null; cell.onpointerenter=null; cell.onpointerup=null;
-  });
-  window.onpointerup = ()=>commitIfValid();
 
-  cells.forEach(cell=>{
-    cell.onpointerdown = (e)=>{
-      ensureAudio(); e.preventDefault();
-      dragStart = posFromIndex(+cell.dataset.index);
-      setPreview([dragStart], false);
-    };
-    cell.onpointerenter = ()=>{
-      if(!dragStart) return;
-      const here = posFromIndex(+cell.dataset.index);
-      const L = collectLine(dragStart, here);
-      if(!L){ clearPreview(); return; }
-      const exact=isExact(L);
-      if(exact) setPreview(L,true);
-      else if(isPrefix(L)) setPreview(L,false);
-      else clearPreview();
-    };
-  });
-}
+gridEl.addEventListener('pointerdown', e=>{
+  const t=e.target.closest('.cell'); if(!t) return;
+  ensureAudio(); clickFx();
+  e.preventDefault(); gridEl.setPointerCapture(e.pointerId);
+  start=posFromEl(t); setPreview([start], false);
+});
+gridEl.addEventListener('pointermove', e=>{
+  if(!start) return;
+  const el=document.elementFromPoint(e.clientX, e.clientY);
+  const cell=(el && el.classList && el.classList.contains('cell'))? el : e.target.closest('.cell');
+  if(!cell) return;
+  const end=posFromEl(cell);
+  const L=collectLine(start,end);
+  if(!L){ clearPreview(); return; }
+  const exact=isExact(L);
+  if(exact) setPreview(L,true);
+  else if(isPrefix(L)) setPreview(L,false);
+  else clearPreview();
+});
 function commitIfValid(){
-  if(!dragStart || !lastPreview.length){ dragStart=null; clearPreview(); return; }
+  if(!start || !lastPreview.length) return;
   const exactName=isExact(lastPreview);
   if(exactName){
     remaining.delete(exactName);
@@ -296,29 +320,27 @@ function commitIfValid(){
     if(remaining.size===0){ statusEl.textContent="أحسنت! ✅"; playWin(); }
     applyHints();
   }
-  dragStart=null; clearPreview();
+  clearPreview(); start=null;
 }
+gridEl.addEventListener('pointerup',    ()=>commitIfValid());
+gridEl.addEventListener('pointercancel',()=>{ clearPreview(); start=null; });
 
-/* زر التلميحات */
+/* hints */
 function applyHints(){
-  for(let r=0;r<N;r++){
-    for(let c=0;c<N;c++){
-      const i=idx(r,c);
-      const el=cells[i];
-      const isFound=el.classList.contains('found');
-      el.classList.toggle('hint', hintsOn && isWord[r][c] && !isFound);
-    }
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+    const i=idx(r,c), el=cells[i], found=el.classList.contains('found');
+    el.classList.toggle('hint', hintsOn && isWord[r][c] && !found);
   }
 }
 btnHints.onclick=()=>{ hintsOn=!hintsOn; btnHints.setAttribute('aria-pressed', hintsOn?'true':'false'); applyHints(); };
 
-/* أزرار أخرى */
+/* autres contrôles */
 btnRegen.onclick=()=>generate(+levelSel.value);
 sizeSel.onchange=()=>{ N=+sizeSel.value; gridEl.style.setProperty('--n',N); generate(+levelSel.value); };
 chunkSel.onchange=()=>{ CHUNK=+chunkSel.value; rebuildLevels(); generate(+levelSel.value); };
 levelSel.onchange=()=>generate(+levelSel.value);
 
-/* ملاءمة حجم الخلايا */
+/* fit hauteur/cell */
 function sizeGridWrap(){
   const header=document.querySelector('header');
   const wrap=gridEl.parentElement;
@@ -332,12 +354,11 @@ function fitGrid(){
   document.documentElement.style.setProperty('--cell', Math.floor(Math.max(22, Math.min(cW, cH)))+'px');
 }
 function refitAll(){ sizeGridWrap(); fitGrid(); }
-window.addEventListener('resize', refitAll);
+addEventListener('resize', refitAll);
 new ResizeObserver(refitAll).observe(document.body);
 
-/* تشغيل */
-generate(0);
-refitAll();
+/* init */
+generate(0); refitAll();
 </script>
 </body>
 </html>
