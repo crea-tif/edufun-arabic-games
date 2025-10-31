@@ -3,21 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>EDUFUN • كلمات خفية للأطفال</title>
+<title>EDUFUN • الكلمات الخفية – أسماء الله الحسنى</title>
 <style>
 :root{
   --ink:#0f172a; --accent:#1f7ae0; --ok:#16a34a; --warn:#f59e0b;
   --glass: rgba(255,255,255,0.88);
   --bg1:#b9f3d0; --bg2:#31c77a;
-  --cell:44px;             /* recalculée en JS */
-  --vh:100vh;              /* vraie hauteur écran (fix mobile) */
-  --head:120px;            /* hauteur header mesurée */
+  --cell:44px; --vh:100vh; --head:120px;
 }
-
-/* Fond & watermark */
 html,body{height:100%}
 body{
-  margin:0; color:var(--ink);
+  margin:0;color:var(--ink);
   font-family:system-ui,-apple-system,"Noto Kufi Arabic","Cairo","Tajawal",Tahoma,Arial;
   background:linear-gradient(35deg,var(--bg1) 0%, var(--bg2) 100%) fixed;
 }
@@ -26,64 +22,27 @@ body::after{
   background:url("../edufun-logo-512.png") no-repeat left/contain;
   opacity:.10; pointer-events:none;
 }
-
-/* Cartes verre dépoli */
-header,.card{
-  background:var(--glass); backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,0.60); border-radius:18px;
-  box-shadow:0 10px 30px rgba(31,122,224,.18);
-}
-.wrap{max-width:1000px; margin:auto; padding:12px}
-
-/* Barre du haut */
+header,.card{background:var(--glass);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.60);border-radius:18px;box-shadow:0 10px 30px rgba(31,122,224,.18)}
+.wrap{max-width:1000px;margin:auto;padding:12px}
 header{margin-bottom:12px}
 .brandbar{display:flex;align-items:center;gap:12px}
 .brand{height:60px;border-radius:10px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.18))}
 @media (max-width:520px){.brand{height:52px}}
 h1{margin:0;font-size:22px}
-.badge{margin-inline-start:8px; font-size:12px; padding:6px 10px; border-radius:999px; background:#fff; border:1px solid #e7f0ff}
-
-.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
-select,button,label.switch{
-  padding:10px 12px; border:1px solid rgba(255,255,255,0.65);
-  background:#fff; border-radius:12px; font-size:14px
-}
+.badge{margin-inline-start:8px;font-size:12px;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid #e7f0ff}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+select,button{padding:10px 12px;border:1px solid rgba(255,255,255,0.65);background:#fff;border-radius:12px;font-size:14px}
 button.primary{background:#10b981;border-color:#10b981;color:#fff;box-shadow:0 6px 16px rgba(16,185,129,.25)}
-
-/* Layout */
 main .wrap{display:grid;grid-template-columns:1fr 320px;gap:16px}
-.grid-wrap{overflow:hidden;height:calc(var(--vh) - var(--head) - 28px)} /* FIX mobile */
-@media (max-width:900px){
-  main .wrap{grid-template-columns:1fr}
-  .grid-wrap{height:calc(var(--vh) - var(--head) - 28px)}
-}
-
-/* Grille */
-.grid{
-  --n:10;
-  display:grid;
-  grid-template-columns:repeat(var(--n),var(--cell));
-  grid-auto-rows:var(--cell);
-  gap:6px; padding:6px; user-select:none; touch-action:none;
-}
-.cell{
-  width:var(--cell);height:var(--cell);
-  display:flex;align-items:center;justify-content:center;
-  background:#fff;border:1px solid #eaf1fb;border-radius:14px;
-  font-weight:800;font-size:clamp(16px,calc(var(--cell)*.55),28px);
-  transition:transform .12s,background .3s,border-color .3s;
-  box-shadow:0 2px 6px rgba(31,122,224,.08);
-}
-.cell.preview{outline:2px dashed #1f7ae0}
-.cell.valid-preview{outline:2px solid var(--warn)}
+.grid-wrap{overflow:hidden;height:calc(var(--vh) - var(--head) - 28px)}
+@media (max-width:900px){main .wrap{grid-template-columns:1fr}}
+.grid{--n:10;display:grid;grid-template-columns:repeat(var(--n),var(--cell));grid-auto-rows:var(--cell);gap:6px;padding:6px;user-select:none;touch-action:none}
+.cell{width:var(--cell);height:var(--cell);display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #eaf1fb;border-radius:14px;font-weight:800;font-size:clamp(16px,calc(var(--cell)*.55),28px);transition:transform .12s,background .3s,border-color .3s;box-shadow:0 2px 6px rgba(31,122,224,.08)}
+.cell.preview{outline:2px dashed #1f7ae0}.cell.valid-preview{outline:2px solid var(--warn)}
 .cell.hint{background:#fff3bf;border-color:#ffd04a;box-shadow:inset 0 0 0 2px #ffd04a33,0 2px 6px rgba(31,122,224,.08)}
 .cell.found{background:#e8f7ee;border-color:#b7e3c8;color:#055a43}
-.cell.flash{animation:flashOk 1s ease-in-out 3}
-@keyframes flashOk{0%,100%{background:#e8f7ee}50%{background:#16a34a;color:#fff;transform:scale(1.05)}}
-
-/* Panneau latéral */
-aside.card{padding:14px}
-h3{margin:0 0 8px}
+.cell.flash{animation:flashOk 1s ease-in-out 3}@keyframes flashOk{0%,100%{background:#e8f7ee}50%{background:#16a34a;color:#fff;transform:scale(1.05)}}
+aside.card{padding:14px}h3{margin:0 0 8px}
 .target{display:flex;flex-wrap:wrap;gap:8px}
 .badge2{background:#fff;border:1px solid #e5eefc;padding:8px 11px;border-radius:999px;font-size:14px;box-shadow:0 1px 3px rgba(31,122,224,.08)}
 .badge2.found{background:#e8f7ee;border-color:#b7e3c8;color:#055a43}
@@ -98,25 +57,25 @@ hr{border:none;border-top:1px solid #e7f0ff;margin:10px 0}
   <div class="wrap">
     <div class="brandbar">
       <img class="brand" src="../edufun-logo-512.png" alt="EDUFUN">
-      <h1>كلمات خفية للأطفال</h1>
+      <h1>الكلمات الخفية — <span style="color:#0f766e">أسماء الله الحسنى</span></h1>
       <span class="badge">Build r7</span>
       <a class="badge" href="../">🏠 الصفحة الرئيسية</a>
     </div>
 
     <div class="controls">
-      <label>الفئة: <select id="category"></select></label>
-      <label>الصعوبة:
-        <select id="difficulty">
-          <option value="easy" selected>سهل</option>
-          <option value="medium">متوسط</option>
-          <option value="hard">صعب</option>
+      <label>عدد الأسماء/المستوى:
+        <select id="chunk">
+          <option value="6">6</option><option value="8" selected>8</option>
+          <option value="10">10</option><option value="12">12</option>
         </select>
       </label>
-      <label class="switch" style="display:inline-flex;gap:8px;align-items:center">
-        <input type="checkbox" id="allowDiag" style="accent-color:#10b981"> السماح بالقطريات
+      <label>حجم الشبكة:
+        <select id="size">
+          <option value="8">8 × 8</option><option value="10" selected>10 × 10</option><option value="12">12 × 12</option>
+        </select>
       </label>
-      <button id="regen" class="primary">شبكة جديدة</button>
-      <button id="toggleHints">إظهار/إخفاء تلميحات</button>
+      <button id="regen" class="primary">إعادة توليد الشبكة</button>
+      <button id="showHints">إظهار/إخفاء تلميحات</button>
       <span id="status" style="margin-inline-start:auto;font-size:13px;opacity:.9"></span>
     </div>
   </div>
@@ -126,187 +85,91 @@ hr{border:none;border-top:1px solid #e7f0ff;margin:10px 0}
   <div class="wrap">
     <section class="card grid-wrap">
       <div id="grid" class="grid"></div>
-      <div class="footer">اسحب من أول حرف إلى آخره. الاتجاهات حسب الإعداد: أفقي/عمودي <span id="diagNote">(بدون قطريات)</span>.</div>
+      <div class="footer">انقر على أول حرف ثم اسحب إلى آخره. الاتجاهات المسموحة: يمين/يسار أو أعلى/أسفل. (لا قطريات)</div>
     </section>
 
     <aside class="card">
-      <h3 id="listTitle">الكلمات المستهدفة</h3>
+      <h3 id="listTitle">الأسماء المستهدفة</h3>
       <div id="targets" class="target"></div>
-      <hr>
-      <div class="help">سهل = 8×8 مع 6–8 كلمات، متوسط = 10×10، صعب = 12×12.</div>
+      <hr><div class="help">واجهة محسّنة للهاتف. إذا لم تر الشبكة كاملة، هذا الإصدار r7 يحسب الارتفاع الحقيقي للشاشة.</div>
     </aside>
   </div>
 </main>
 
 <script>
-/* ===== فئات الكلمات ===== */
-const CATS = {
-  "الألوان": ["أحمر","أزرق","أخضر","أصفر","برتقالي","بنفسجي","وردي","أسود","أبيض","بني","ذهبي","فضي"],
-  "الحيوانات": ["قطة","كلب","حصان","بقرة","غزال","أسد","نمر","ثعلب","جمل","سمكة","طيور","ببغاء","أرنب","فيل","زرافة","ذئب","قرد","نحلة"],
-  "الفواكه": ["تفاح","موز","برتقال","عنب","فراولة","كمثرى","خوخ","رمان","كيوي","بطيخ","شمام","تين","مانجو","أناناس"],
-  "الخضار": ["طماطم","خيار","بطاطس","جزر","خس","فلفل","بصل","ثوم","قرنبيط","باذنجان","سبانخ"],
-  "أشياء الصف": ["قلم","ممحاة","مسطرة","دفتر","كتاب","حقيبة","سبورة","طباشير","مبراة","مقص","لاصق"],
-  "وسائل النقل": ["سيارة","حافلة","دراجة","قطار","طائرة","سفينة","مترو","شاحنة","قارب"],
-  "الملابس": ["قميص","بنطال","حذاء","قبعة","وشاح","فستان","معطف","جوارب","حزام"],
-  "الأشكال": ["دائرة","مربع","مثلث","مستطيل","نجمة","قلب","بيضاوي","معيّن"]
-};
-
-/* ===== DOM ===== */
-const gridEl=document.getElementById('grid');
-const catSel=document.getElementById('category');
-const diffSel=document.getElementById('difficulty');
-const chkDiag=document.getElementById('allowDiag');
-const btnRegen=document.getElementById('regen');
-const btnHints=document.getElementById('toggleHints');
-const targetsEl=document.getElementById('targets');
-const listTitle=document.getElementById('listTitle');
-const statusEl=document.getElementById('status');
-const diagNote=document.getElementById('diagNote');
-
-/* ===== Etat ===== */
-let N=10, CHUNK=8, cells=[], board=[], isWord=[], names=[], remaining=new Set(), hintsOn=false;
+const ALL_NAMES=["الله","الرحمن","الرحيم","الملك","القدوس","السلام","المؤمن","المهيمن","العزيز","الجبار","المتكبر","الخالق","البارئ","المصور","الغفار","القهار","الوهاب","الرزاق","الفتاح","العليم","القابض","الباسط","الخافض","الرافع","المعز","المذل","السميع","البصير","الحكم","العدل","اللطيف","الخبير","الحليم","العظيم","الغفور","الشكور","العلي","الكبير","الحفيظ","المقيت","الحسيب","الجليل","الكريم","الرقيب","المجيب","الواسع","الحكيم","الودود","المجيد","الباعث","الشهيد","الحق","الوكيل","القوي","المتين","الولي","الحميد","المحصي","المبدئ","المعيد","المحيي","المميت","الحي","القيوم","الواجد","الماجد","الواحد","الصمد","القادر","المقتدر","المقدم","المؤخر","الأول","الآخر","الظاهر","الباطن","الوالي","المتعالي","البر","التواب","المنتقم","العفو","الرؤوف","مالك الملك","ذو الجلال والإكرام","المقسط","الجامع","الغني","المغني","المانع","الضار","النافع","النور","الهادي","البديع","الباقي","الوارث","الرشيد","الصبور"];
+const gridEl=document.getElementById('grid'), sizeSel=document.getElementById('size'), chunkSel=document.getElementById('chunk'), targetsEl=document.getElementById('targets'), listTitle=document.getElementById('listTitle'), statusEl=document.getElementById('status'), btnRegen=document.getElementById('regen'), btnHints=document.getElementById('showHints');
+let N=+sizeSel.value, CHUNK=+chunkSel.value; let cells=[], board=[], isWord=[], targetNames=[], remaining=new Set(); let hintsOn=false;
 const AR_RANDOM="ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
 const randLetter=()=>AR_RANDOM[Math.floor(Math.random()*AR_RANDOM.length)];
 const normalize=s=>s.replace(/\s+/g,'').replace(/ـ/g,'').replace(/[^\u0600-\u06FF]/g,'');
 const idx=(r,c)=>r*N+c, inBounds=(r,c)=>r>=0&&r<N&&c>=0&&c<N;
 
-/* catégories */
-Object.keys(CATS).forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=k; catSel.appendChild(o); });
-catSel.value="الألوان";
-
-/* difficulté */
-function applyDifficulty(){
-  const d=diffSel.value;
-  if(d==="easy"){ N=8; CHUNK=7; }
-  else if(d==="medium"){ N=10; CHUNK=9; }
-  else { N=12; CHUNK=12; }
-  gridEl.style.setProperty('--n',N);
-}
-
-/* grille */
-function buildGrid(){
-  gridEl.innerHTML=''; cells=[];
-  for(let i=0;i<N*N;i++){ const d=document.createElement('div'); d.className='cell'; d.dataset.index=i; gridEl.appendChild(d); cells.push(d); }
-}
-function pickNames(cat){
-  const pool=CATS[cat].filter(w=>normalize(w).length<=N);
-  const arr=pool.slice(); for(let i=arr.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [arr[i],arr[j]]=[arr[j],arr[i]]; }
-  return arr.slice(0, Math.min(CHUNK, arr.length));
-}
-
-/* placement h/v + diagonales si coché */
+function buildGrid(){ gridEl.innerHTML=''; cells=[]; for(let i=0;i<N*N;i++){ const d=document.createElement('div'); d.className='cell'; d.dataset.index=i; gridEl.appendChild(d); cells.push(d);} }
 function tryPlace(word){
-  const chars=normalize(word).split(''), L=chars.length;
-  let dirs=[{dr:0,dc:1},{dr:0,dc:-1},{dr:1,dc:0},{dr:-1,dc:0}];
-  if(chkDiag.checked) dirs=dirs.concat([{dr:1,dc:1},{dr:1,dc:-1},{dr:-1,dc:1},{dr:-1,dc:-1}]);
-  for(let t=0;t<600;t++){
-    const dir=dirs[(Math.random()*dirs.length)|0];
-    let r=(dir.dr<0?L-1:0)+Math.floor(Math.random()*(N-(L-1)*Math.abs(dir.dr)));
-    let c=(dir.dc<0?L-1:0)+Math.floor(Math.random()*(N-(L-1)*Math.abs(dir.dc)));
-    let ok=true;
-    for(let k=0;k<L;k++){ const rr=r+dir.dr*k, cc=c+dir.dc*k; if(!inBounds(rr,cc) || (board[rr][cc] && board[rr][cc]!==chars[k])){ ok=false; break; } }
-    if(!ok) continue;
-    for(let k=0;k<L;k++){ const rr=r+dir.dr*k, cc=c+dir.dc*k; board[rr][cc]=chars[k]; isWord[rr][cc]=true; }
-    return true;
-  }
-  return false;
+  const chars=normalize(word).split(''), L=chars.length; if(L>N) return false;
+  const dirs=[{dr:0,dc:-1},{dr:1,dc:0}];
+  for(let t=0;t<420;t++){
+    const dir=dirs[Math.random()<.6?0:1]; let r,c;
+    if(dir.dc===-1){ r=Math.floor(Math.random()*N); c=Math.floor(Math.random()*(N-1))+(L-1); }
+    else{ r=Math.floor(Math.random()*(N-L)); c=Math.floor(Math.random()*N); }
+    let ok=true; for(let k=0;k<L;k++){ const rr=r+dir.dr*k, cc=c+dir.dc*k; if(!inBounds(rr,cc) || (board[rr][cc] && board[rr][cc]!==chars[k])){ ok=false; break; } }
+    if(!ok) continue; for(let k=0;k<L;k++){ const rr=r+dir.dr*k, cc=c+dir.dc*k; board[rr][cc]=chars[k]; isWord[rr][cc]=true; } return true;
+  } return false;
 }
-
-/* génération */
+function pickSubset(a,k){ const x=a.slice(); for(let i=x.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [x[i],x[j]]=[x[j],x[i]];} return x.slice(0,Math.min(k,x.length)); }
 function generate(){
-  applyDifficulty();
-  names=pickNames(catSel.value);
+  const eligible=ALL_NAMES.filter(n=>normalize(n).length<=N);
+  let names=pickSubset(eligible, Math.min(CHUNK, eligible.length));
   names.sort((a,b)=>normalize(b).length-normalize(a).length);
   board=Array.from({length:N},()=>Array(N).fill(null));
   isWord=Array.from({length:N},()=>Array(N).fill(false));
-  let placed=true;
-  for(const w of names){ if(!tryPlace(w)){ placed=false; break; } }
-  if(!placed){
-    while(names.length>3){
-      names.pop();
-      board=Array.from({length:N},()=>Array(N).fill(null));
-      isWord=Array.from({length:N},()=>Array(N).fill(false));
-      placed=true;
-      for(const w of names){ if(!tryPlace(w)){ placed=false; break; } }
-      if(placed) break;
-    }
-  }
+  let placed=true; for(const nm of names){ if(!tryPlace(nm)){ placed=false; break; } }
+  if(!placed){ for(let attempt=0; attempt<3 && !placed; attempt++){ names.pop(); board=Array.from({length:N},()=>Array(N).fill(null)); isWord=Array.from({length:N},()=>Array(N).fill(false)); placed=true; for(const nm of names){ if(!tryPlace(nm)){ placed=false; break; } } } }
   for(let r=0;r<N;r++)for(let c=0;c<N;c++) if(!board[r][c]) board[r][c]=randLetter();
-  remaining=new Set(names);
+  targetNames=names; remaining=new Set(names);
   buildGrid(); for(let r=0;r<N;r++)for(let c=0;c<N;c++) cells[idx(r,c)].textContent=board[r][c];
   renderTargets(); updateStatus(); refitAll(); applyHints();
-  diagNote.textContent = chkDiag.checked ? "(مع القطريات)" : "(بدون قطريات)";
 }
-
-/* cibles */
-function renderTargets(){
-  targetsEl.innerHTML=''; listTitle.textContent=`الكلمات المستهدفة — (${names.length} كلمة)`;
-  names.forEach(n=>{ const b=document.createElement('span'); b.className='badge2'; b.dataset.name=n; b.textContent=n; targetsEl.appendChild(b); });
-}
+function renderTargets(){ listTitle.textContent=`الأسماء المستهدفة — (${targetNames.length} اسم)`; targetsEl.innerHTML=''; targetNames.forEach(n=>{ const b=document.createElement('span'); b.className='badge2'; b.dataset.name=n; b.textContent=n; targetsEl.appendChild(b); }); }
 function markBadgeFound(n){ [...targetsEl.children].forEach(x=>{ if(x.dataset.name===n) x.classList.add('found'); }); }
-function updateStatus(){ statusEl.textContent=`المتبقي: ${remaining.size} / ${names.length}`; }
-
-/* trajet */
-function collectLine(f,t){
-  const dr=Math.sign(t.r-f.r), dc=Math.sign(t.c-f.c);
-  if(dr===0 && dc===0) return [{r:f.r,c:f.c}];
-  if(dr!==0 && dc!==0){
-    if(!chkDiag.checked) return null;
-    if(Math.abs(t.r-f.r)!==Math.abs(t.c-f.c)) return null;
-  }else{
-    if(f.r!==t.r && f.c!==t.c) return null;
-  }
-  const L=[]; let r=f.r, c=f.c; while(true){ L.push({r,c}); if(r===t.r && c===t.c) break; r+=dr; c+=dc; } return L;
-}
+function updateStatus(){ statusEl.textContent=`المتبقي: ${remaining.size} / ${targetNames.length}`; }
+function collectLine(f,t){ if(f.r===t.r && t.c<=f.c){ const L=[]; for(let c=f.c;c>=t.c;c--) L.push({r:f.r,c}); return L; } if(f.c===t.c && t.r>=f.r){ const L=[]; for(let r=f.r;r<=t.r;r++) L.push({r,c:f.c}); return L; } return null; }
 function textFrom(L){ let s=''; for(const p of L) s+=board[p.r][p.c]; return s; }
 function isExact(L){ const p=textFrom(L); for(const n of remaining) if(normalize(n)===p) return n; return null; }
-function isPrefix(L){ const p=textFrom(L); for(const n of remaining) if(normalize(n).startsWith(p)) return true; return false; }
+function isPrefix(L){ const p=textFrom(L); for(const n of remaining){ if(normalize(n).startsWith(p)) return true; } return false; }
 
-/* sons web + confettis */
 let actx=null;
 function ensureAudio(){ if(!actx){ actx=new (window.AudioContext||window.webkitAudioContext)(); } }
-function tone(f,d=0.12,t='sine',g=0.09,w=0){ ensureAudio(); const ct=actx.currentTime+w; const o=actx.createOscillator(), G=actx.createGain(); o.type=t; o.frequency.value=f; G.gain.value=g; G.gain.setValueAtTime(g,ct); G.gain.exponentialRampToValueAtTime(0.0001,ct+d); o.connect(G).connect(actx.destination); o.start(ct); o.stop(ct+d); }
-function ding(){ tone(880,0.10,'triangle',0.11,0); tone(1320,0.12,'triangle',0.09,0.07); }
-function win(){ [660,880,990,1320].forEach((f,i)=>tone(f,0.16,'square',0.10,i*0.08)); confetti(); }
-function confetti(){
-  const c=document.createElement('canvas'); c.width=innerWidth; c.height=innerHeight;
-  Object.assign(c.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:9999});
-  document.body.appendChild(c); const ctx=c.getContext('2d'), pcs=[], cols=['#ff6b6b','#ffd166','#06d6a0','#1f7ae0','#8338ec'];
-  for(let i=0;i<160;i++) pcs.push({x:Math.random()*c.width,y:-20-Math.random()*200,r:6+Math.random()*6,col:cols[(Math.random()*cols.length)|0],vx:-1+Math.random()*2,vy:2+Math.random()*2,rot:Math.random()*Math.PI,vr:(-0.1+Math.random()*0.2)});
-  let t=0; (function a(){ ctx.clearRect(0,0,c.width,c.height);
-    pcs.forEach(p=>{ p.x+=p.vx;p.y+=p.vy;p.vy+=0.05;p.rot+=p.vr; ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.col;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);ctx.restore(); });
-    if(t++<180) requestAnimationFrame(a); else c.remove();
-  })();
+function tone(freq, dur=0.12, type='sine', gain=0.08, when=0){
+  ensureAudio(); const t=actx.currentTime+when; const osc=actx.createOscillator(), g=actx.createGain();
+  osc.type=type; osc.frequency.value=freq; g.gain.value=gain; g.gain.setValueAtTime(gain,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  osc.connect(g).connect(actx.destination); osc.start(t); osc.stop(t+dur);
 }
+function playDing(){ tone(880,0.10,'triangle',0.10,0); tone(1320,0.12,'triangle',0.08,0.07); }
+function playWin(){ [660,880,990,1320].forEach((f,i)=>tone(f,0.15,'square',0.09,i*0.08)); }
 
-/* sélection */
 let start=null, lastPreview=[];
 function posFromEl(el){ const i=+el.dataset.index; return {r:Math.floor(i/N), c:i%N}; }
 function clearPreview(){ lastPreview.forEach(p=>cells[idx(p.r,p.c)].classList.remove('preview','valid-preview')); lastPreview=[]; }
 function setPreview(L,exact=false){ clearPreview(); if(!L) return; L.forEach(p=>cells[idx(p.r,p.c)].classList.add(exact?'valid-preview':'preview')); lastPreview=L.slice(); }
-function applyHints(){ for(let r=0;r<N;r++)for(let c=0;c<N;c++){ const el=cells[idx(r,c)], found=el.classList.contains('found'); el.classList.toggle('hint', hintsOn && isWord[r][c] && !found); } }
+function applyHints(){ for(let r=0;r<N;r++)for(let c=0;c<N;c++){ const i=idx(r,c), el=cells[i], found=el.classList.contains('found'); el.classList.toggle('hint', hintsOn && isWord[r][c] && !found); } }
 
-gridEl.addEventListener('pointerdown', e=>{
-  const t=e.target.closest('.cell'); if(!t) return;
-  ensureAudio(); e.preventDefault(); gridEl.setPointerCapture(e.pointerId);
-  start=posFromEl(t); setPreview([start], false);
-});
+gridEl.addEventListener('pointerdown', e=>{ const t=e.target.closest('.cell'); if(!t) return; ensureAudio(); e.preventDefault(); gridEl.setPointerCapture(e.pointerId); start=posFromEl(t); setPreview([start], false); });
 gridEl.addEventListener('pointermove', e=>{
-  if(!start) return;
-  const el=document.elementFromPoint(e.clientX, e.clientY);
-  const cell=(el && el.classList && el.classList.contains('cell'))? el : e.target.closest('.cell');
-  if(!cell) return; const end=posFromEl(cell);
-  const L=collectLine(start,end); if(!L){ clearPreview(); return; }
-  const exact=isExact(L); if(exact){ setPreview(L,true); } else if(isPrefix(L)){ setPreview(L,false); } else{ clearPreview(); }
+  if(!start) return; const el=document.elementFromPoint(e.clientX, e.clientY);
+  const cell=(el && el.classList && el.classList.contains('cell'))? el : e.target.closest('.cell'); if(!cell) return;
+  const end=posFromEl(cell); const L=collectLine(start,end); if(!L){ clearPreview(); return; }
+  const exact=isExact(L); if(exact) setPreview(L,true); else if(isPrefix(L)) setPreview(L,false); else clearPreview();
 });
 function commitIfValid(){
   if(!start || !lastPreview.length) return;
-  const exact=isExact(lastPreview);
-  if(exact){
-    remaining.delete(exact);
-    lastPreview.forEach(p=>cells[idx(p.r,p.c)].classList.add('found','flash'));
-    markBadgeFound(exact); updateStatus(); ding();
-    if(remaining.size===0){ statusEl.textContent="أحسنت! ✅"; win(); }
+  const exactName=isExact(lastPreview);
+  if(exactName){
+    remaining.delete(exactName);
+    lastPreview.forEach(p=>gridEl.children[idx(p.r,p.c)].classList.add('found','flash'));
+    markBadgeFound(exactName); updateStatus(); playDing();
+    if(remaining.size===0){ statusEl.textContent="أحسنت! ✅"; playWin(); }
     applyHints();
   }
   clearPreview(); start=null;
@@ -314,7 +177,7 @@ function commitIfValid(){
 gridEl.addEventListener('pointerup', commitIfValid);
 gridEl.addEventListener('pointercancel', ()=>{ clearPreview(); start=null; });
 
-/* Responsive: calcule --vh et --head pour la hauteur de grille */
+/* Responsive: --vh + --head */
 function setViewportVars(){
   const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
   document.documentElement.style.setProperty('--vh', vh+'px');
@@ -334,10 +197,9 @@ new ResizeObserver(()=>refitAll()).observe(document.body);
 
 /* UI */
 btnRegen.onclick=()=>generate();
+sizeSel.onchange=()=>{ N=+sizeSel.value; gridEl.style.setProperty('--n',N); generate(); };
+chunkSel.onchange=()=>{ CHUNK=+chunkSel.value; generate(); };
 btnHints.onclick=()=>{ hintsOn=!hintsOn; btnHints.setAttribute('aria-pressed', hintsOn?'true':'false'); applyHints(); };
-catSel.onchange=()=>generate();
-diffSel.onchange=()=>generate();
-chkDiag.onchange=()=>generate();
 
 /* Start */
 generate(); refitAll();
