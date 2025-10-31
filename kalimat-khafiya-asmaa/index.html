@@ -6,13 +6,16 @@
 <title>الكلمات الخفية — كلمات حول الأسماء الحسنى</title>
 <style>
 :root{
-  /* Palette proche “Kids” (vert clair/contrasté) */
+  /* Palette “Kids” (vert clair/contrasté) */
   --ink:#0f172a; --accent:#1f7ae0;
   --ok:#16a34a; --warn:#f59e0b;
   --glass: rgba(255,255,255,0.85);
   --bg1:#b9f3d0; --bg2:#31c77a;
   --cell:44px; /* recalculée en JS */
 }
+*,
+*::before,
+*::after{ box-sizing:border-box; } /* ✅ empêche les débordements surprises */
 
 /* ===== Fond dégradé + watermark logo ===== */
 html,body{height:100%}
@@ -40,14 +43,15 @@ header{ position:sticky; top:0; z-index:5; margin-bottom:12px; }
 
 /* Brand + Home */
 .brandbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
-.brand{ display:flex; align-items:center; gap:12px; }
-.brand img{ height:56px; border-radius:10px; filter:drop-shadow(0 1px 2px rgba(0,0,0,.18)); }
-h1{ margin:0; font-size:22px; }
+.brand{ display:flex; align-items:center; gap:12px; min-width:0; }
+.brand img{ height:56px; border-radius:10px; filter:drop-shadow(0 1px 2px rgba(0,0,0,.18)); flex:0 0 auto; }
+h1{ margin:0; font-size:22px; line-height:1.25; }
 .home{
   display:inline-flex; align-items:center; gap:8px;
   padding:10px 14px; border-radius:12px;
   background:#10b981; color:#fff; text-decoration:none; font-weight:700;
   box-shadow:0 6px 16px rgba(16,185,129,.25);
+  white-space:nowrap;
 }
 
 /* Barre de commandes */
@@ -59,17 +63,21 @@ button.primary{ background:#10b981; border-color:#10b981; color:#fff; box-shadow
 /* Layout */
 main .wrap{ display:grid; grid-template-columns:1fr 320px; gap:16px; }
 
-/* Hauteur pilotée JS (fix mobile) */
-.grid-wrap{ overflow:hidden; height:var(--gridH,70vh); }
+/* Hauteur pilotée JS (fix mobile) + largeur sûre */
+.grid-wrap{
+  overflow:hidden; height:var(--gridH,70vh);
+  width:100%; /* ✅ empêche le débordement horizontal */
+}
 
-/* Bonus : pour navigateurs modernes, exploite 100dvh */
+/* Bonus : si 100dvh dispo, exploite-le */
 @supports (height: 100dvh){
   .grid-wrap{ height: calc(100dvh - var(--headH,240px)); }
 }
 
-/* ✅ Mobile : header non-collant pour éviter le rognage de la grille */
+/* ✅ Mobile : header non-collant pour éviter le rognage, padding plus doux */
 @media (max-width:900px){
   header{ position:static; }
+  .wrap{ padding-inline:8px; }
   main .wrap{ grid-template-columns:1fr; }
   .grid-wrap{ height:var(--gridH,68vh); }
   aside.card{ margin-top:10px; }
@@ -83,6 +91,7 @@ main .wrap{ display:grid; grid-template-columns:1fr 320px; gap:16px; }
   grid-template-columns:repeat(var(--n),var(--cell));
   grid-auto-rows:var(--cell);
   gap:6px; user-select:none; touch-action:none; padding:6px;
+  max-width:100%; /* ✅ ne dépasse jamais son conteneur */
 }
 .cell{
   width:var(--cell); height:var(--cell);
@@ -365,25 +374,42 @@ function applyHints(){
 }
 btnHints.onclick=()=>{ hintsOn=!hintsOn; btnHints.setAttribute('aria-pressed', hintsOn?'true':'false'); applyHints(); };
 
-/* ========= Recalc responsive (FIX mobile) ========= */
+/* ========= Recalc responsive (fix Android A06 & co) ========= */
 function sizeGridWrap(){
-  const vh = window.visualViewport ? window.visualViewport.height
-           : Math.min(window.innerHeight, document.documentElement.clientHeight);
-  const header=document.querySelector('header');
-  const headerH= header ? header.getBoundingClientRect().height : 0;
+  // Hauteurs candidates
+  const ih = window.innerHeight || 0;
+  const ch = document.documentElement.clientHeight || 0;
+  const vv = (window.visualViewport && window.visualViewport.height) || 0;
+  const viewportH = Math.max(ih, ch, vv || 0); // prends le plus grand disponible
+
+  const header = document.querySelector('header');
+  const headerH = header ? header.offsetHeight : 0; // ✅ plus robuste que getBoundingClientRect()
   document.documentElement.style.setProperty('--headH', headerH + 'px');
-  const H = Math.max(280, vh - headerH - 28);
-  gridEl.parentElement.style.setProperty('--gridH', H+'px');
+
+  // marge de respiration
+  const H = Math.max(280, viewportH - headerH - 20);
+  gridEl.parentElement.style.setProperty('--gridH', H + 'px');
 }
 function fitGrid(){
-  const wrap=gridEl.parentElement, styles=getComputedStyle(gridEl);
-  const gap=parseFloat(styles.gap)||0, W=wrap.clientWidth-4, H=wrap.clientHeight-4;
-  const cW=(W-gap*(N-1))/N, cH=(H-gap*(N-1))/N;
-  document.documentElement.style.setProperty('--cell', Math.floor(Math.max(22, Math.min(cW, cH)))+'px');
+  const wrap=gridEl.parentElement;
+  const W=wrap.clientWidth - 4;         // largeur utile
+  const H=wrap.clientHeight - 4;        // hauteur utile
+  const gap=6;                          // même que CSS .grid{gap:6px}
+  const cW=(W-gap*(N-1))/N;
+  const cH=(H-gap*(N-1))/N;
+  const px=Math.floor(Math.max(22, Math.min(cW, cH)));
+  document.documentElement.style.setProperty('--cell', px+'px');
 }
 function refitAll(){ sizeGridWrap(); fitGrid(); }
+
+/* Écouteurs robustes (Android barre d’adresse dynamique) */
 addEventListener('resize', refitAll);
-new ResizeObserver(()=>refitAll()).observe(document.body);
+addEventListener('orientationchange', refitAll);
+addEventListener('pageshow', refitAll);
+if (window.visualViewport){
+  visualViewport.addEventListener('resize', refitAll);
+  visualViewport.addEventListener('scroll', refitAll);
+}
 
 /* ========= UI Events ========= */
 btnRegen.onclick=()=>generate(+levelSel.value);
@@ -393,7 +419,9 @@ levelSel.onchange=()=>generate(+levelSel.value);
 
 /* ========= Start ========= */
 generate(0);
+/* deux passes : la seconde après layout pour appareils facétieux */
 refitAll();
+setTimeout(refitAll, 0);
 </script>
 </body>
 </html>
